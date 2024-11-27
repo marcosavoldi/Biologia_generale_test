@@ -1,0 +1,1996 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esame biologia generale</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #0056b3;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .question {
+            margin-bottom: 20px;
+        }
+
+        .question h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            padding: 8px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        input[type="radio"]:checked {
+            accent-color: black;
+            /* Cambia il colore del pallino selezionato in nero */
+        }
+
+        label:hover {
+            background-color: #d1e7dd;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #003d80;
+        }
+
+        .result {
+            font-weight: bold;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        .result p {
+            margin: 10px 0;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            button {
+                font-size: 14px;
+            }
+        }
+
+        #timer {
+            display: none;
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: #0056b3;
+            /* Sfondo blu */
+            color: white;
+            /* Testo bianco */
+            font-weight: bold;
+            /* Testo in grassetto */
+            border-radius: 5px;
+            padding: 8px;
+            font-size: 16px;
+            z-index: 1000;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+            width: 90px;
+            /* Aumenta leggermente la larghezza del box */
+            text-align: center;
+            /* Centra il testo all'interno del box */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Esame biologia generale</h1>
+
+        <button id="startButton" onclick="startTest()">Inizia Test</button>
+        <div id="timer" style="display:none; text-align:center; font-size:20px; margin-top:10px;"><span
+                id="time"></span></div>
+        <form id="quizForm"></form>
+
+        <div class="result" id="result"></div>
+
+        <!-- Pulsante per andare al Pannello di Controllo -->
+        <button type="button" onclick="window.location.href='control_panel.html'">Vai al Pannello di Controllo</button>
+
+        <!-- Pulsante per riavviare il test -->
+        <button type="button" onclick="restartTest()">Riavvia Test</button>
+
+        <!-- Pulsante per riproporre lo stesso test -->
+        <button type="button" onclick="repeatSameTest()">Riproponi lo stesso Test</button>
+
+    </div>
+
+    <script>
+        // Set di domande
+        const questions = [
+        {
+    text: "Qual è la corretta definizione di organismo eterotrofo?",
+    options: ["Non utilizza composti oganici come nutrimento", "E' in grado di sintetizzare i composti nutritivi a partire da semplici composti inorganici e organici", "Necessita di ricavare i composti organici nuritivi dall'esterno", "Non ha bisogno di alcun nutrimento"],
+    correct: 0
+},
+{
+    text: "Come si suddividono le cellule in relazione alla modalità di reperimento dei composti nutritivi?",
+    options: ["Autotrofe ed eucariote", "Eucariote e anaerobie", "Autotrofe ed eterotrofe", "Eucariote e procariote"],
+    correct: 2
+},
+{
+    text: "Cosa contriddistingue un organismo aerobio rispetto a uno anaerobio?",
+    options: ["E' in grado di sintetizzare i composti nutritivi a partire da semplici composti inorganici e organici", "La capacità di utilizzare 02 come nutrimento", "La necessità di vivere in un ambiente privo di 02", "La necessità di vivere in un ambiente contenente 02"],
+    correct: 3
+},
+{
+    text: "Quale importantissimo evento biologico ha modificato radicalmente la composizione dell'atmosfera terrestre?",
+    options: ["La riproduzione sessuale", "La comparsa di organismi pluricellulari", "Lo sviluppo della fotosintesi", "La comparsa degli eucarioti"],
+    correct: 2
+},
+{
+    text: "Qual è l'unità fondamentale della vita?",
+    options: ["La riproduzione sessuale", "La cellula", "Il DNA", "Il brodo primordiale"],
+    correct: 1
+},
+{
+    text: "Come si suddividono le cellule in relazione alla presenza di membrane?",
+    options: ["Autotrofe ed eucariote", "Eucariote e procariote", "Autotrofe ed eterotrofe", "Eucariote e anaerobie"],
+    correct: 1
+},
+{
+    text: "Qual è l'unità fondamentale della vita?",
+    options: ["La riproduzione sessuale", "La cellula", "Il brodo primordiale", "DNA"],
+    correct: 1
+},
+{
+    text: "Quale importantissimo evento biologico ha modificato radicalmente la composizione dell'atmosfera terrestre?",
+    options: ["La comparsa di organismi pluricellulari", "Lo sviluppo della fotosintesi", "La riproduzione sessuale", "La comparsa degli eucarioti"],
+    correct: 1
+},
+{
+    text: "Come si suddividono le cellule in relazione alla modalità di reperimento dei composti nutritivi?",
+    options: ["Autotrofe ed eucariote", "Autotrofe ed eterotrofe", "Eucariote e procariote", "Eucariote e anaerobie"],
+    correct: 1
+},
+{
+    text: "Cosa indica la valenza di un elemento?",
+    options: ["A quanti atomi è legato l'elemento", "Il numero di elettroni dell'orbitale esterno in grado di formare legami", "Il numero di elettroni totali", "Il numero di orbitali dell'elemento"],
+    correct: 1
+},
+{
+    text: "Cosa contraddistingue un organismo aerobio rispetto a uno anaerobio?",
+    options: ["La necessità di vivere in un ambiente privo di 02", "La capacità di sintetizzare i composti nutritivi a partire da semplici composti inorganici e organici", "La necessità di vivere in un ambiente contenente 02", "La capacità di utilizzare 02 come nutrimento"],
+    correct: 2
+},
+{
+    text: "Le molecole di H2O, in forma liquida o solida, da che tipo di legame sono tenute insieme (proprietà coesive e adesive)?",
+    options: ["di Van Der Waals", "Tonico", "Covalente", "Idrogeno"],
+    correct: 3
+},
+{
+    text: "Nel caso di un sale (ad es. NaCl), che tipo di legame c'è tra gli atomi di Na e CI?",
+    options: ["Covalente", "Ionico", "di Van Der Waals", "Idrogeno"],
+    correct: 1
+},
+{
+    text: "Come avviene un legame covalente?",
+    options: ["Attraverso la condivisione di elementi tra più atomi", "Mediante l'unione di atomi di C ,0, e H", "Mediante la cessione di uno o più elettroni", "A causa dell'attrazione tra ioni di segno opposto"],
+    correct: 0
+},
+{
+    text: "I fosfolipidi differiscono dai trigliceridi in quanto i primi...?",
+    options: ["non possiedono porzioni idrofiliche e porzioni idrofobiche.", "non sono derivati del glicerolo.", "sono anfipatici.", "non contengono acidi grassi."],
+    correct: 2
+},
+{
+    text: "Nella struttura a doppio filamento del DNA...?",
+    options: ["entrambi i filamenti decorrono nella stessa direzione.", "i due filamenti sono tenuti assieme da legami idrogeno.", "i monomeri di ogni filamento sono reciprocamente uniti da legami ionici.", "i due filamenti sono tenuti assieme da legami covalenti."],
+    correct: 1
+},
+{
+    text: "Gli acidi grassi sono...?",
+    options: ["idrocarburi saturi.", "generalmente presenti nelle proteine idrosolubili.", "acidi carbossilici dotati di lunghe code idrocarburiche.", "polimeri di monosaccaridi di elevate dimensioni."],
+    correct: 2
+},
+{
+    text: "La struttura primaria di una proteina, formata da una o più catene polipeptidiche, è definita da?",
+    options: ["la posizione nella catena proteica dei gruppi amminici primari", "il ripiegamento ad alfa-elica presente in alcuni tratti delle catene polipeptidiche", "la disposizione assunta dalle catene polipeptidiche quando sono denaturate", "l'ordine di successione degli aminoacidi nelle catene polipeptidiche"],
+    correct: 3
+},
+{
+    text: "Quale di queste affermazioni sui lipidi è vera?",
+    options: ["si sciolgono tutti in solventi polari", "Contengono tutti acidi grassi", "si sciolgono tutti in solventi apolari", "Sono solubili in acqua"],
+    correct: 2
+},
+{
+    text: "I polimeri possono essere degradati nei monomeri che li compongono mediante?",
+    options: ["Idrolisi", "Condensazione", "Esterificazione", "Isomerizzazione"],
+    correct: 0
+},
+{
+    text: "Ilegami peptidici che formano una proteina si costituiscono coinvolgendo?",
+    options: ["Un gruppo ossidrilico terminale e un gruppo aminico terminale", "Un gruppo ossidrilico interno e un gruppo aminico terminale", "Un gruppo ossidrilico terminale e un idrogeno", "Un gruppo carbossilico terminale e un gruppo aminico terminale"],
+    correct: 3
+},
+{
+    text: "I fosfolipidi presentano una porzione della molecola idrofila perché?",
+    options: ["Sono dei lipidi privi di acidi grassi", "Presentano delle code di acidi grassi polari", "Uno degli acidi grassi è sostituito da un solfato", "Uno degli acidi grassi è sostituito da un fosfato legato a una colina"],
+    correct: 3
+},
+{
+    text: "Gli acidi nucleici sono tenuti insieme da legami fosfodiesterici (o fosfodiestere) che si formano tra?",
+    options: ["Una base azotata e uno zucchero", "Due purine", "Due basi azotate", "Un gruppo fosfato e due zuccheri"],
+    correct: 3
+},
+{
+    text: "Denaturazione di una proteina significa che?",
+    options: ["Si perde momentaneamente la sua attività biologica, che viene poi recuperata in condizioni favorevoli", "Si perde la sua attività biologica, a causa della rottura di legami e apertura delle catene peptidiche", "Aumenta la temperatura dell'organismo", "Varia la sua attività biologica in seguito al cambiamento della struttura terziaria"],
+    correct: 0
+},
+{
+    text: "Un gruppo -OH è presente?",
+    options: ["negli idrocarburi", "nei chetoni", "negli alcoli", "nelle ammine"],
+    correct: 2
+},
+{
+    text: "Le proteine con struttura quaternaria?",
+    options: ["sono formate da almeno 4 subunità", "sono formate da almeno 2 subunità distinte", "contengono un gruppo eme che collega le 4 subunità", "presentano tutte legami ionici tra amminoacidi acidi e basici"],
+    correct: 1
+},
+{
+    text: "Nelle proteine, la struttura primaria è definita?",
+    options: ["dalla sequenza dei fosfolipidi", "dalla composizione in amminoacidi", "dalla sequenza degli amminoacidi", "dalla formazione di una alfa elica"],
+    correct: 1
+},
+{
+    text: "La struttura generale di un amminoacido è?",
+    options: ["Un atomo di carbonio da cui partono catene polisaccaridiche ramificate", "Una struttura assiale composta da atomi di carbonio", "Un atomo di carbonio a cui sono legati due gruppi carbossilici, che cedendo protoni formano legami", "Un atomo di carbonio a cui sono legati un gruppo amminico, un gruppo carbossilico e un gruppo R"],
+    correct: 3
+},
+{
+    text: "Un acido grasso si definisce saturo?",
+    options: ["Se al suo interno non si ritrovano gruppi funzionali", "Se non è solubile in acqua", "Se presenta degli atomi di carbonio uniti da doppi legami", "Se non presenta doppi legami"],
+    correct: 3
+},
+{
+    text: "Qual è la funzione principale del complesso di Golgi?",
+    options: ["Lo smistamento delle sostanze nella cellula", "La digestione intracellulare", "La respirazione cellulare", "La sintesi di proteine"],
+    correct: 0
+},
+{
+    text: "Quale delle seguenti affermazioni riguardo i procarioti è VERA?",
+    options: ["Non possono produrre ATP", "Non hanno apparato di Golgi", "Non possiedono ribosomi", "Non hanno nucleo e quindi non hanno DNA"],
+    correct: 1
+},
+{
+    text: "Quale dei seguenti è la struttura che ha permesso alla cellula di funzionare come entità distinta?",
+    options: ["I lisosomi", "I ribosomi", "Gli acidi nucleici", "La membrana plasmatica"],
+    correct: 3
+},
+{
+    text: "A livello del nucleolo avviene la sintesi di?",
+    options: ["RNA messaggero", "RNA transfer", "RNA ribosomiali", "istoni"],
+    correct: 2
+},
+{
+    text: "Qual è la funzione principale del reticolo endoplasmatico rugoso?",
+    options: ["Lo smistamento delle sostanze nella cellula", "La digestione intracellulare", "La respirazione cellulare", "La sintesi di proteine"],
+    correct: 3
+},
+{
+    text: "In una cellula eucariotica non troviamo DNA?",
+    options: ["Nei cromosomi", "Nei geni", "Nei ribosomi", "Nei mitocondri"],
+    correct: 2
+},
+{
+    text: "L' espressione 9 + 2 fa riferimento?",
+    options: ["All'organizzazione dei microfilamenti intorno alle ciglia o ai flagelli", "Al numero di ciglia o flagelli", "Alla disposizione dei microtubuli all'interno delle ciglia e dei flagelli", "All'organizzazione degli istoni"],
+    correct: 2
+},
+{
+    text: "La membrana plasmatica si trova?",
+    options: ["Nel citoplasma", "Solo intorno al nucleo", "Solo intorno al nucleo e agli organuli intracellulari", "Sia nelle cellule procariotiche che eucariotiche"],
+    correct: 3
+},
+{
+    text: "La struttura 8 + 2 fa riferimento?",
+    options: ["Nessuna delle risposte è corretta", "AI numero di ciglia o flagelli", "Alla disposizione dei microtubuli all'interno delle ciglia e dei flagelli", "All'organizzazione dei microfilamenti intorno alle ciglia o ai flagelli"],
+    correct: 0
+},
+{
+    text: "La struttura 9 + 1 fa riferimento?",
+    options: ["Nessuna delle risposte è corretta", "Alla disposizione dei microtubuli all'interno delle ciglia e dei flagelli", "Al numero di ciglia o flagelli", "All'organizzazione dei microfilamenti intorno alle ciglia o ai flagelli"],
+    correct: 0
+},
+{
+    text: "Nelle cellule animali, il DNA è contenuto?",
+    options: ["Nel nucleo e nei mitocondri", "Nel nucleo", "Nel nucleo e nei ribosomi", "In tutti i compartimenti cellulari"],
+    correct: 0
+},
+{
+    text: "Qual è la funzione principale dei lisosomi?",
+    options: ["L'immagazzinamento di energia", "La digestione intracellulare", "La sintesi di glicoproteine", "La respirazione cellulare"],
+    correct: 1
+},
+{
+    text: "Qual è la funzione principale dei ribosomi?",
+    options: ["L'immagazzinamento di energia", "La sintesi di proteine", "La respirazione cellulare", "La digestione intracellulare"],
+    correct: 1
+},
+{
+    text: "Quale dei seguenti organelli è circondato da una doppia membrana?",
+    options: ["Golgi", "Nucleo", "Perossisoma", "Lisosoma"],
+    correct: 1
+},
+{
+    text: "Tutte le seguenti affermazioni sulle integrine sono corrette eccetto?",
+    options: ["si trovano sulla membrana plasmatica", "collaborano all'organizzazione del citoscheletro", "sono trasportatori", "fanno parte della ECM"],
+    correct: 2
+},
+{
+    text: "Quale delle seguenti affermazioni relativa ai mitocondri NON è vera?",
+    options: ["Possiedono un loro DNA", "La loro membrana interna si introflette a formare delle creste", "Sono verdi perchè contengono clorofilla", "Al loro interno viene prodotta una grande quantità di ATP"],
+    correct: 2
+},
+{
+    text: "Quale delle seguenti affermazioni relative alle proteine è corretta?",
+    options: ["Le proteine che devono essere immagazzinate nella cellula vengono trasportate al RE rugoso", "le proteine sono sintetizzate nei mitocondri", "Le proteine sono trasportate al RE rugoso per essere utilizzate dalla cellula", "I lipidi ed i carboidrati sono legati alle proteine nel complesso del Golgi"],
+    correct: 3
+},
+{
+    text: "Quale delle seguenti affermazioni sui mitocondri è falsa?",
+    options: ["Contengono enzimi", "Presentano una doppia membrana", "Sono la sede della respirazione cellulare", "Contengono i perossisomi"],
+    correct: 3
+},
+{
+    text: "Quale di queste è una funzione del reticolo endoplasmatico liscio?",
+    options: ["Lo smistamento delle sostanze nella cellula", "La degradazione di alcune sostanze tossiche", "La sintesi di proteine", "La digestione intracellulare"],
+    correct: 1
+},
+{
+    text: "Quale di queste è una funzione del reticolo endoplasmatico liscio?",
+    options: ["La sintesi di fosfolipidi", "La sintesi di proteine", "Lo smistamento delle sostanze nella cellula", "La digestione intracellulare"],
+    correct: 0
+},
+{
+    text: "Quale di queste è una funzione del reticolo endoplasmatico liscio?",
+    options: ["La sintesi di colesterolo e proteine", "La sintesi di carboidrati e proteine", "La sintesi di colesterolo ed enzimi", "La sintesi di carboidrati e lipidi"],
+    correct: 3
+},
+{
+    text: "Quale di queste funzioni NON è propria delle membrane cellulari?",
+    options: ["Movimento della cellula sul substrato", "Compartimentazione all'interno della cellula", "Trasporto di materiali all'interno di vescicole", "Barriera che porta alla formazione di una differenza di concentrazione tra un lato e l'altro"],
+    correct: 0
+},
+{
+    text: "I mitocondri?",
+    options: ["presentano una doppia membrana", "presentano una membrana plasmatica", "sono la sede della sintesi proteica", "sono la sede in cui vengono degradate le sostanze di scarto della cellula"],
+    correct: 0
+},
+{
+    text: "I perossisomi sono organuli cellulari che?",
+    options: ["Tutte le risposte sono vere", "Sono coinvolti nella sintesi del colesterolo", "Contengono enzimi per catalizzare reazioni che prevedono trasferimento di idrogeno e formazione di perossido di idrogeno", "Contengono enzimi per la degradazione del perossido di idrogeno, altrimenti tossico per la cellula"],
+    correct: 0
+},
+{
+    text: "Nella cellula eucariotica troviamo il DNA, oltre che nel nucleo?",
+    options: ["Nell'apparato di Golgi", "Nel reticolo endoplasmatico liscio", "Nei mitocondri", "Nei ribosomi"],
+    correct: 2
+},
+{
+    text: "Quali di queste strutture si trovano nello stesso organello?",
+    options: ["la matrice e le creste", "il DNA ei lisosomi", "il citosol e la membrana plasmatica", "nessuna delle risposte è corretta"],
+    correct: 0
+},
+{
+    text: "Quali tra le molecole o complessi elencati non sono associati alla membrana plasmatica?",
+    options: ["proteine che compongono i canali ionici", "recettori", "proteine che compongono i trasportatori", "enzimi per la sintesi proteica"],
+    correct: 3
+},
+{
+    text: "Le cellule connesse da giunzioni serrate (dette anche strette) hanno generalmente la funzione di?",
+    options: ["Sigillare temporaneamente alcune cavità corporee per permettere l'accumulo di sostanze solo da un lato della cavità", "Impedire il passaggio di ioni e la conseguente formazione di un gradiente tra i diversi compartimenti dell'organismo", "Sigillare alcune cavità corporee, impedendo il passaggio di fluidi e sostanze tra le cellule", "Impedire il trasporto attivo di determinate sostanze in alcuni compartimenti dell'organismo"],
+    correct: 2
+},
+{
+    text: "Il trasporto attivo?",
+    options: ["Sfrutta l'energia del gradiente di concentrazione", "È una forma di osmosi", "È un processo che avviene secondo gradiente", "Sfrutta l'ATP come fonte di energia per il movimento delle sostanze"],
+    correct: 3
+},
+{
+    text: "La pompa sodio potassio funziona?",
+    options: ["utilizzando il gradiente elettrochimico", "utilizzando ATP", "utilizzando un flusso di ioni sodio", "utilizzando glucosio"],
+    correct: 1
+},
+{
+    text: "La membrana plasmatica delle cellule eucariotiche presenta tutte le seguenti funzioni, tranne una. Quale?",
+    options: ["È una barriera selettiva permeabile che circonda la cellula", "Facilita il trasporto degli zuccheri", "È il luogo dove avviene la sintesi proteica", "È un sito per i recettori degli ormoni"],
+    correct: 2
+},
+{
+    text: "La membrana cellulare è fragile ed ha bisogno di un supporto interno di proteine fibrose: questo supporto si chiama?",
+    options: ["citoscheletro", "spettrina", "cortex cellulare", "matrice"],
+    correct: 0
+},
+{
+    text: "La diffusione facilitata ed il trasporto attivo?",
+    options: ["Richiedono entrambi l'intervento di proteine trasportatrici", "Avvengono entrambi contro un gradiente di concentrazione elettrochimico", "Richiedono entrambi ATP", "Provvedono entrambi al trasporto dei soluti in una sola direzione"],
+    correct: 0
+},
+{
+    text: "La batteriorodopsina funziona come?",
+    options: ["uniporto", "simporto", "cotrasportatore", "antiporto"],
+    correct: 0
+},
+{
+    text: "Il trasporto passivo?",
+    options: ["è un processo che avviene contro gradiente di concentrazione", "è una forma di diffusione semplice", "Sfrutta l'energia dell'ATP", "Sfrutta l'energia del gradiente elettrochimico"],
+    correct: 3
+},
+{
+    text: "Guardando le code idrofobiche, quale di questi fosfolipidi è quello che da più fluidità alla membrana?",
+    options: ["24 carboni ed 1 doppio legame", "15 carboni e 2 doppi legami", "16 carboni e nessun doppio legame", "20 carboni e 2 doppi legami"],
+    correct: 1
+},
+{
+    text: "I trasportatori, al contrario dei canali ionici funzionano?",
+    options: ["aprendo e chiudendo delle porte", "selezionando per carica", "legandosi ai soluti con siti specifici", "selezionando per dimensioni"],
+    correct: 2
+},
+{
+    text: "I trasportatori ABC?",
+    options: ["sono importanti nella diffusione facilitata di alcuni ioni", "costituiscono un gruppo di proteine canale", "utilizzano l'energia dell'ATP per trasportare ioni e molecole", "permettono la diffusione passiva attraverso i loro canali"],
+    correct: 2
+},
+{
+    text: "I lipidi di membrana sono capaci di svolgere diversi movimenti, quale di questi non avviene spontaneamente?",
+    options: ["movimenti laterali", "rotazione", "flessione delle code idrofobiche", "passaggio da uno strato all'altro della membrana"],
+    correct: 3
+},
+{
+    text: "I gradienti elettrochimici?",
+    options: ["sono necessari per il trasporto attraverso le acquaporine", "sono il risultato delle differenze di concentrazione e delle cariche elettriche ai 2 lati della membrana", "alimentano la diffusione semplice", "alimentano il trasporto attivo"],
+    correct: 1
+},
+{
+    text: "Dove vengono sintetizzate la maggior parte delle membrane nella cellula?",
+    options: ["nel nucleo", "nei ribosomi", "nel reticolo endoplasmatico", "nell'apparato del Golgi"],
+    correct: 2
+},
+{
+    text: "Cosa succede se una membrana viene bucata con una punta?",
+    options: ["si forma una vescicola", "la membrana si espande", "la membrana collassa", "l'apertura prodotta si richiude"],
+    correct: 3
+},
+{
+    text: "Le proteine che selezionano i soluti principalmente in base alle dimensioni e alla carica elettrica sono?",
+    options: ["uniporti", "trasportatori passivi", "canali ionici", "trasportatori attivi"],
+    correct: 2
+},
+{
+    text: "Le giunzioni serrate hanno generalmente la funzione di?",
+    options: ["Sigillare alcune cavità corporee, impedendo il passaggio di materiali tra le cellule", "Permettere il passaggio di ioni e la formazione di un gradiente di concentrazione", "Sigillare temporaneamente alcuni vasi sanguigni.", "Permettere il trasporto di determinate sostanze tra le cellule"],
+    correct: 0
+},
+{
+    text: "Le giunzioni che permettono il trasporto di molecole tra due cellule vegetali adiacenti sono?",
+    options: ["I desmosomi", "I plasmodesmi", "Le giunzioni comunicanti", "Le giunzioni aderenti"],
+    correct: 1
+},
+{
+    text: "Le pompe del sodio/potassio sulla membrana sono esempi di?",
+    options: ["canali ionici", "trasportatori accoppiati", "pompe ATP-dipendenti", "proteine che mediano il trasporto passivo"],
+    correct: 2
+},
+{
+    text: "L'osmosi è un tipo di?",
+    options: ["trasporto attivo", "diffusione", "reazione chimica", "movimento casuale"],
+    correct: 1
+},
+{
+    text: "Quale delle seguenti affermazione relative ai fosfolipidi di membrana è sbagliata?",
+    options: ["Possono spostarsi rapidamente da un versante all'altro della membrana", "Possiedono \"teste\" idrofiliche", "Sono anfipatici", "Possiedono \"code\" idrofobiche"],
+    correct: 0
+},
+{
+    text: "Le proteine che usano il movimento di un soluto secondo gradiente per fornire energia per il trasporto contro gradiente di un secondo soluto si chiamano?",
+    options: ["porine", "trasportatori accoppiati", "trasportatori passivi", "canali ionici"],
+    correct: 1
+},
+{
+    text: "L'esocitosi prevede?",
+    options: ["L'attivazione di un recettore di membrana", "Il rilascio del materiale contenuto in una vescicola all'esterno della cellula", "L'ingresso nella cellula di materiali liquidi", "L'ingresso nella cellula di materiali solidi"],
+    correct: 1
+},
+{
+    text: "Nel cotrasporto?",
+    options: ["il trasporto di un soluto secondo il suo gradiente elettrochimico rende possibile il trasporto di un altro soluto contro gradiente", "una proteina canale trasporta ioni per diffusione facilitata", "l'osmosi alimenta il trasporto di ioni contro il gradiente elettrochimico", "un trasportatore ad uniporto trasporta un soluto contro il suo gradiente di concentrazione"],
+    correct: 0
+},
+{
+    text: "Per una molecola priva di carica, la direzione del trasporto passivo attraverso una membrana è determinata solamente?",
+    options: ["dal gradiente di ioni Na", "dal gradiente di ioni K", "dal suo gradiente di concentrazione", "dal suo gradiente elettrochimico"],
+    correct: 2
+},
+{
+    text: "Quale dei seguenti ioni è più abbondante in una cellula di mammifero?",
+    options: ["Na+", "Cat+", "H+", "K+"],
+    correct: 3
+},
+{
+    text: "Quale dei seguenti termini/affermazioni non è associabile al trasporto attivo?",
+    options: ["trasportatori ABC", "gradiente elettrochimico", "movimento secondo gradiente", "idrolisi di ATP"],
+    correct: 2
+},
+{
+    text: "Quale delle seguenti affermazione relative ai fosfolipidi di membrana è sbagliata?",
+    options: ["Possiedono \"code\" idrofiliche", "Possiedono \"teste\" idrofiliche", "Possiedono 2 \"code\"", "Sono anfipatici"],
+    correct: 0
+},
+{
+    text: "Quale delle seguenti affermazioni è corretta?",
+    options: ["La carica netta negativa sulla faccia citosolica della membrana incrementa il tasso di importazione di glucosio all'interno della cellula da parte di un uniporto", "La diffusione facilitata può essere descritta come il movimento spontaneo di un soluto secondo il suo gradiente di concentrazione, accoppiato con il movimento forzato contro gradiente di un secondo soluto", "Molti sistemi di cotrasporto utilizzano flussi di K+ indotti dal gradiente elettrochimico", "I trasportatori del glucosio del dominio apicale delle cellule dell'epitelio intestinale sono simporti"],
+    correct: 3
+},
+{
+    text: "Quale delle seguenti affermazioni riguardo ai lipidi di membrana è VERA?",
+    options: ["Negli eucarioti, tutti gli organelli racchiusi da membrane sono circondati da un unico doppio strato lipidico", "La forma favorita di un doppio strato lipidico in acqua è un foglio piatto con i margini esposti", "I lipidi di membrana compiono spesso dei movimenti 'flip-flop' da uno strato all'altro", "I lipidi di membrana si possono muovere all'interno dello strato della membrana"],
+    correct: 3
+},
+{
+    text: "Quale delle seguenti affermazioni riguardo ai lipidi di membrana è VERA?",
+    options: ["I lipidi di membrana diffondono all'interno del piano della membrana", "I lipidi di membrana compiono spesso dei movimenti 'flip-flop' da uno strato all'altro", "La forma favorita da un doppio strato lipidico in acqua è un foglio piatto con i margini esposti", "Negli eucarioti, tutti gli organelli racchiusi da membrane sono circondati da un unico doppio strato lipidico"],
+    correct: 0
+},
+{
+    text: "Quale delle seguenti affermazioni sul glicocalice è falsa?",
+    options: ["E' coinvolto nei meccanismi di adesione cellulare", "Gli oligosaccaridi del glicocalice sono molto simili e ordinati", "Non si trova normalmente sul lato citosolico della membrana", "Gli oligosaccaridi sono coinvolti nel riconoscimento cellulare"],
+    correct: 1
+},
+{
+    text: "Quale delle seguenti affermazioni sul modello a mosaico fluido è vera?",
+    options: ["Le molecole dei fosfolipidi sono libere di muoversi lateralmente", "Le molecole di colesterolo non sono libere di muoversi lateralmente", "Le membrane sono costituite da un mosaico di fosfolipidi e trigliceridi", "Le membrane sono costituite da lipidi che localmente assumono lo stato liquido"],
+    correct: 0
+},
+{
+    text: "Perché le reazioni redox sono un mezzo per trasferire energia all'interno delle cellule?",
+    options: ["Perché la sostanza che si ossida trasferisce protoni ed elettroni ad altre molecole come NAD e FAD", "Perché la sostanza che si riduce trasferisce energia insieme agli elettroni", "Perché queste reazioni implicano la fosforilazione di un substrato", "Perché per queste reazioni è necessaria la presenza di NAD e FAD"],
+    correct: 0
+},
+{
+    text: "Un enzima accelera una reazione metabolica?",
+    options: ["Abbassando l'energia di attivazione della reazione", "Alzando l'energia di attivazione della reazione", "Facendo in modo che una reazione esoergonica decorra spontaneamente", "Spingendo la reazione lontano dalla condizione di equilibrio"],
+    correct: 0
+},
+{
+    text: "Un catalizzatore biologico che influenza la velocità di una reazione chimica senza essere consumato dalla reazione stessa è un?",
+    options: ["Cofattore", "Prodotto", "Enzima", "Coenzima"],
+    correct: 2
+},
+{
+    text: "Quale delle seguenti affermazioni sulla termodinamica è vera?",
+    options: ["La quantità totale di energia può cambiare dopo una trasformazione chimica", "L'energia libera può essere usata per compiere trasformazioni chimiche", "L'entropia non tende ad assumere il valore massimo possibile", "L'energia libera viene assorbita in una reazione esoergonica"],
+    correct: 1
+},
+{
+    text: "Quale molecola si lega al sito allosterico di un enzima?",
+    options: ["Un inibitore non competitivo", "Una molecola molto simile al substrato", "Il substrato", "Un inibitore competitivo"],
+    correct: 0
+},
+{
+    text: "I complessi della catena di trasporto degli elettroni si trovano?",
+    options: ["Nella membrana mitocondriale esterna", "Nell'apparato di Golgi", "Nella membrana mitocondriale interna", "Nel citosol"],
+    correct: 2
+},
+{
+    text: "Quale funzione tra quelle elencate non è una funzione mitocondriale?",
+    options: ["sintesi di DNA e RNA", "produzione di ATP", "glicolisi", "ciclo di Krebs"],
+    correct: 2
+},
+{
+    text: "Oltre ad anidride carbonica e acqua, il catabolismo delle proteine dà come prodotto finale?",
+    options: ["Asparagina", "Ammoniaca poi trasformata in urea", "Acido lattico", "Acido citrico"],
+    correct: 1
+},
+{
+    text: "L'accettore finale degli elettroni della catena di trasporto degli elettroni che svolge la sua funzione nella fosforilazione ossidativa è?",
+    options: ["L'ADP", "Il piruvato", "L'ossigeno", "Il NAD+"],
+    correct: 2
+},
+{
+    text: "La velocità della glicolisi è?",
+    options: ["Stimolata dal citrato", "Stimolata dall'ADP", "Stimolata dall'ATP", "Inibita dall'ADP"],
+    correct: 1
+},
+{
+    text: "La resa energetica della glicolisi rispetto alla respirazione aerobica è?",
+    options: ["16 vs. 38 molecole di ATP per molecola di glucosio", "8 vs. 38 molecole di ATP per molecola di glucosio", "2 vs. 24 molecole di ATP per molecola di glucosio", "2 vs. 38 molecole di ATP per molecola di glucosio"],
+    correct: 3
+},
+{
+    text: "L'anabolismo sta al catabolismo come?",
+    options: ["Esoergonico sta ad endoergonico", "Esoergonico sta a spontaneo", "Entropia sta a energia libera", "Endoergonico sta a esoergonico"],
+    correct: 3
+},
+{
+    text: "La maggior parte dell'ATP prodotto durante la respirazione cellulare viene generato?",
+    options: ["Dalla glicolisi", "Dalla fermentazione", "Dal ciclo di Krebs", "Dalla fosforilazione ossidativa"],
+    correct: 3
+},
+{
+    text: "Quale funzione tra quelle elencate non è una funzione nucleare?",
+    options: ["beta-ossidazione degli acidi grassi", "sintesi del DNA", "sintesi RNA", "sintesi dei ribosomi"],
+    correct: 0
+},
+{
+    text: "Quale delle seguenti funzioni non è associata ai lisosomi?",
+    options: ["degradazione degli acidi nucleici", "degradazione delle proteine", "demolizione dei patogeni", "degradazione dei perossidi e dell'acqua ossigenata"],
+    correct: 3
+},
+{
+    text: "Quale delle seguenti affermazioni è vera?",
+    options: ["Normalmente la membrana del reticolo endoplasmatico è molto più estesa di quella plasmatica", "Il nucleo è l'unico organello che contiene DNA", "Escluso il nucleo, gli altri organelli cellulari sono molto piccoli", "Il nucleo è l'unico organello circondato da una doppia membrana"],
+    correct: 0
+},
+{
+    text: "Quale delle seguenti affermazioni sul reticolo endoplasmatico RE è falsa?",
+    options: ["Il RE è la sede della sintesi della maggior parte delle membrane nella cellula", "Gli ormoni steroidei sono sintetizzati nel RE ruvido", "Le membrane del RE sono contigue alla membrana esterna del nucleo", "Le proteine sono sintetizzate sulle membrane del RE ruvido"],
+    correct: 1
+},
+{
+    text: "Quale delle seguenti affermazioni è vera?",
+    options: ["Dal momento che i batteri non hanno mitocondri non possono produrre energia sfruttando le membrane", "Si pensa che i lisosomi derivino da antichi batteri specializzati nella digestione", "I cloroplasti ed i mitocondri condividono lo stesso DNA", "Si pensa che la membrana nucleare derivi da un'invaginazione della membrana plasmatica attorno al DNA"],
+    correct: 3
+},
+{
+    text: "Quale delle seguenti affermazioni sul trasporto nucleare è corretta?",
+    options: ["I pori nucleari permettono il libero passaggio di piccole molecole idrosolubili", "gli mRNA ele proteine utilizzano diversi pori nucleari", "I pori nucleari sono fatti da molte copie della stessa proteina", "I recettori di importazione nucleare si legano al segnale di localizzazione nucleare sulla proteina e l'accompagnano all'ingresso del poro e lì le rilasciano"],
+    correct: 3
+},
+{
+    text: "Quale delle seguenti affermazioni sulla fagocitosi nelle cellule animali è falsa?",
+    options: ["I fagociti sono importanti nell'intestino per assorbire particelle di cibo", "I fagociti fagocitano cellule danneggiate e detriti", "I fagociti fagocitano microorganismi infettivi e i lisosomi si occupano della loro distruzione", "I fagociti estendono degli pseudopodi che circondano il materiale che deve essere fagocitato"],
+    correct: 0
+},
+{
+    text: "Quale delle seguenti affermazioni sulla secrezione è vera?",
+    options: ["Le sequenze segnale delle proteine destinate all'esocitosi costitutiva ne assicurano il packaging nelle vescicole corrette", "La membrana di una vescicola secretoria si fonde con la membrana plasmatica e libera il suo contenuto nello spazio extracellulare", "Le vescicole per l'esocitosi regolata non gemmano dal reticolo trans del Golgi fino a quando non arriva un apposito segnale", "Le proteine destinate all'esocitosi costitutiva si aggregano grazie al pH acido presente nel reticolo trans del Golgi"],
+    correct: 1
+},
+{
+    text: "Quale delle seguenti affermazioni sulle proteine mitocondriali è vera?",
+    options: ["la maggior parte delle proteine mitocondriali è sintetizzata all'interno dei mitocondri", "le proteine chaperone facilitano il passaggio delle proteine attraverso le membrane mitocondriali", "le proteine mitocondriali attraversano le membrane nella loro forma ripiegata", "le sequenze segnale per le proteine mitocondriali sono generalmente vicine al terminale carbossilico"],
+    correct: 1
+},
+{
+    text: "Quale delle seguenti affermazioni sulle proteine nel lume del RE è falsa?",
+    options: ["alcune delle proteine del lume del RE possono posizionarsi nel lume di altri organelli del sistema delle endomembrane", "alcune delle proteine del lume del RE possono posizionarsi sulla membrana plasmatica", "le proteine nel lume del RE sono sintetizzate dai ribosomi sulla membrana del RE", "alcune delle proteine del lume del RE possono essere rilasciate nello spazio extracellulare"],
+    correct: 1
+},
+{
+    text: "Quale delle seguenti affermazioni sulle vescicole che gemmano dal Golgi è falsa?",
+    options: ["la clatrina è importante per legare e selezionare le proteine cargo per il trasporto", "la clatrina agisce sul lato citosolico della membrana del Golgi", "quando la vescicola si stacca della membrana anche la clatrina si stacca", "la clatrina interagisce con le adattine"],
+    correct: 0
+},
+{
+    text: "Quale delle seguenti proteine non è coinvolta nel direzionare le vescicole di trasporto alla membrana target?",
+    options: ["le -SNARE", "le proteine di attracco", "le adattine", "le Rab"],
+    correct: 2
+},
+{
+    text: "Quale delle seguenti sequenze riflette l'ordine di posizioni che assume una proteina destinata alla membrana plasmatica?",
+    options: ["Golgi-lisosomi-membrana plasmatica", "ER-lisosomi-membrana plasmatica", "ER-Golgi-membrana plasmatica", "lisosomi-endosomi-membrana plasmatica"],
+    correct: 2
+},
+{
+    text: "Quale delle seguenti affermazioni sul sistema UPR (risposta alle proteine mal ripiegate) è falsa?",
+    options: ["l'attivazione dell'UPR porta all'espressione di recettori per l'ubiquitina", "l'attivazione dell'UPR porta alla produzione di più membrana del RE", "l'attivazione dell'UPR può portare ad apoptosi", "l'attivazione dell'UPR porta alla produzione di più proteine chaperone"],
+    correct: 0
+},
+{
+    text: "Qual è il principale anione che neutralizza le cariche positive nell'ambiente esterno?",
+    options: ["Br-", "HKc03-", "OH-", "Cl-"],
+    correct: 3
+},
+{
+    text: "Le proteine scaffold?",
+    options: ["aprono i canali ionici", "rilasciano enzimi nel citoplasma", "organizzano gruppi di molecole della stessa via di segnalazione in complessi", "sono presenti solo nei procarioti"],
+    correct: 2
+},
+{
+    text: "Nel processo di trasduzione del segnale?",
+    options: ["possono attivarsi solo i secondi messaggeri", "la molecola segnale attiva direttamente la trascrizione genica", "il segnale viene terminato dalle chinasi", "la cellula converte il messaggio della molecola segnale in un segnale intracellulare"],
+    correct: 3
+},
+{
+    text: "Qual è la sequenza corretta?",
+    options: ["invio della molecola segnale, ricezione, trasduzione del segnale e risposta cellulare", "risposta cellulare, trasduzione del segnale, ricezione e invio della molecola segnale", "trasduzione cellulare ed invio della molecola segnale", "risposta cellulare e trasduzione del segnale"],
+    correct: 0
+},
+{
+    text: "Nella segnalazione endocrina",
+    options: ["avviene una segnalazione elettrica tra due cellule vicine (es: due neuroni)", "le proteine G vengono inattivate", "il segnale viene terminato", "le ghiandole rilasciano molecole segnale nel sangue"],
+    correct: 3
+},
+{
+    text: "Una cascata di proteina chinasi può amplificare un segnale intracellulare...?",
+    options: ["attivando una proteina G che lega e attiva successivamente una seconda proteina, amplificando il segnale.", "attivando una chinasi in grado di indurre successivamente l'attivazione di numerose proteine.", "aprendo giunzioni serrate per permettere la diffusione dei segnali provenienti da cellule adiacenti.", "usando fattori di trascrizione per aumentare l'espressione genica."],
+    correct: 1
+},
+{
+    text: "I recettori accoppiati ai canali ionici?",
+    options: ["aprono o chiudono il canale dopo il legame con il ligando", "sono attivati esclusivamente da segnali elettrici", "attivano le fosfatasi", "chiudono il canale e terminano il segnale"],
+    correct: 0
+},
+{
+    text: "Il signalling paracrino avviene?",
+    options: ["tra cellule vicine", "solo tra cellule del sistema immunitario e neuroni", "nella cellula stessa", "tra cellule lontane ed il segnale viene trasportato dalla circolazione sanguigna @"],
+    correct: 0
+},
+{
+    text: "Le cellule possono ricevere segnali?",
+    options: ["molto diversi (chimici, elettrici, fisici, etc)", "solo segnali ormonali", "solo elettrici", "solo molecolari ed elettrici"],
+    correct: 0
+},
+{
+    text: "Il principale centro di organizzazione dei microtubuli nelle cellule animali è?",
+    options: ["Il cinetocore", "Il centrosoma", "La cortex cellulare", "il centromero"],
+    correct: 1
+},
+{
+    text: "Comprendono cheratina e neurofilamenti?",
+    options: ["Miofibrille", "Filamenti intermedi", "Microtubuli", "Microfilamenti di actina"],
+    correct: 1
+},
+{
+    text: "La struttura 9 + 1 fa riferimento?",
+    options: ["Nessuna delle risposte è corretta", "Alla disposizione dei microtubuli all'interno delle ciglia e dei flagelli", "Al numero di ciglia o flagelli", "All'organizzazione dei microfilamenti intorno alle ciglia o ai flagelli"],
+    correct: 0
+},
+{
+    text: "La membrana cellulare è fragile ed ha bisogno di un supporto interno di proteine fibrose: questo supporto si chiama?",
+    options: ["citoscheletro", "cortex cellulare", "matrice", "spettrina"],
+    correct: 0
+},
+{
+    text: "Quale dei seguenti affermazioni non si riferisce ad una caratteristica simile nel meccanismo di polimerizzazione di actina e tubulina?",
+    options: ["L'idrolisi dei nucleotidi promuove la depolimerazione dei filamenti", "Sebbene entrambi i filamenti possono crescere da entrambe le estremità, la crescita all'estremità + è più veloce", "I monomeri liberi (actina e tubulina) portano i nucleotidi trifosfato", "La depolarizzazione avviene all'estremità più dei filamenti"],
+    correct: 3
+},
+{
+    text: "Quale delle seguenti affermazioni sui filamenti del citoscheletro è falsa?",
+    options: ["I filamenti del citoscheletro sono tenuti insieme da legami covalenti", "Il citoscheletro può modificarsi dopo uno stimolo ambientale", "I filamenti del citoscheletro possono essere di 3 tipologie differenti", "Il citoscheletro organizza la posizione degli organelli cellulari"],
+    correct: 0
+},
+{
+    text: "Quale delle seguenti affermazioni è corretta? Le chinesine e le dineine?",
+    options: ["ricevono energia dall'idrolisi di GTP", "hanno code che si legano al microtubulo", "si muovono in direzione opposta", "si muovono sui microtubuli e sui microfilamenti di actina"],
+    correct: 2
+},
+{
+    text: "Quale delle seguenti affermazioni sulla struttura dei microtubuli è falsa?",
+    options: ["l'alfatubulina e la betatubulina sono legate covalentemente in un dimero", "I protofilamenti sono assemblati in modo da dare una polarità al microtubulo", "I microtubuli sono costituiti da protofilamenti che si assemblano in maniera stabile", "I due lati del protofilamento sono diversi: su di una faccia è presente l'alfatubulina sull'altra faccia c'è la betatubulina"],
+    correct: 0
+},
+{
+    text: "Ordina le seguenti strutture da quella con il diametro più piccolo a quella con il diametro più grande?",
+    options: ["filamenti di actina-microtubuli-filamenti intermedi-miofibrille", "microtubuli-filamenti intermedi-filamenti di actina-miofibrille", "miofibrille-filamenti di actina-filamenti intermedi-microtubuli", "filamenti di actina-filamenti intermedi-microtubuli-miofibrille"],
+    correct: 3
+},
+{
+    text: "L'idrolisi da GTP a GDP compiuta dalla tubulina?",
+    options: ["sposta il bilancio energetico verso la crescita del microtubulo", "permette il comportamento dei microtubuli chiamato instabilità dinamica", "fornisce l'energia sufficiente per la polimerizzazione", "avviene perchè la riserva di GDP libera è esaurita"],
+    correct: 1
+},
+{
+    text: "Quale delle seguenti molecole o strutture non è importante per il movimento dei flagelli?",
+    options: ["la dineina", "ATP", "il reticolo sarcoplasmatico", "i microtubuli"],
+    correct: 2
+},
+{
+    text: "Quale delle seguenti affermazioni sul citoscheletro è vera?",
+    options: ["Il citoscheletro costituisce una struttura rigida e non modificabile che da forma alla cellula", "Le 3 tipologie di filamenti del citoscheletro hanno delle funzioni peculiari e agiscono in maniera indipendente", "Tutte le cellule eucariote hanno filamenti di actina, filamenti intermedi e microtubuli nel loro citoplasma", "Sia i filamenti di actina che i microtubuli hanno una polarità con un'estremità che cresce più dell'altra"],
+    correct: 3
+},
+{
+    text: "Quale delle seguenti affermazioni sull'actina è falsa?",
+    options: ["L'instabilità dinamica dei filamenti di actina è importante per il movimento", "L'actina nel cortex cellulare dà la forma alla cellula", "I filamenti di actina si originano dai lati di filamenti di actina preesistenti nei lamellipodi", "L'idrolisi dell'ATP diminuisce la stabilità del filamento di actina"],
+    correct: 0
+},
+{
+    text: "Quale delle seguenti proteine non è coinvolta direttamente nella formazione dei lamellipodi?",
+    options: ["actina", "miosina", "ARP", "proteina Rho"],
+    correct: 1
+},
+{
+    text: "Quale delle seguenti proteine è coinvolta nel movimento sia delle ciglia sia delle vescicole intracellulari?",
+    options: ["Miosina", "Dineina", "Actina", "Cheratina"],
+    correct: 1
+},
+{
+    text: "Quale delle seguenti strutture si accorcia durante la contrazione muscolare?",
+    options: ["La miosina", "L'actina", "I flagelli", "Il sarcomero"],
+    correct: 3
+},
+{
+    text: "Quale delle seguenti affermazioni sulla replicazione del DNA è falsa?",
+    options: ["Comporta l'intervento di proteine che si legano a filamenti singoli", "I due filamenti vengono copiati con velocità diverse", "il primer è una piccola molecola di DNA", "L'elica di DNA deve aprirsi prima della replicazione"],
+    correct: 2
+},
+{
+    text: "Se in una molecola di DNA a doppio filamento la percentuale di C è pari a 15%, qual è la percentuale di A?",
+    options: ["15%", "20%", "45%", "35%"],
+    correct: 3
+},
+{
+    text: "Se in una molecola di DNA a doppio filamento la percentuale di C è pari a 30 %, qual è la percentuale di T?",
+    options: ["45%", "30%", "15%", "20%"],
+    correct: 3
+},
+{
+    text: "Gli esperimenti (di Avery, Hersey e Chase) hanno avuto grande importanza perché?",
+    options: ["Hanno dimostrato il ruolo centrale degli zuccheri nella trasmissione di informazione genetica", "Hanno permesso la scoperta della struttura a doppia elica del DNA", "Hanno dimostrato il ruolo centrale dei lipidi nella trasmissione di informazione genetica", "Hanno individuato nel DNA la natura di portatore dell'informazione genetica"],
+    correct: 3
+},
+{
+    text: "In una molecola di DNA si trova un gruppo fosfato?",
+    options: ["Lungo ogni filamento, alternato a uno zucchero", "Ogni due zuccheri", "Legato a ogni zucchero, a congiungere trasversalmente i due filamenti singoli", "Lungo lo scheletro delle eliche, legato a uno zucchero e a una base azotata"],
+    correct: 0
+},
+{
+    text: "Quale delle seguenti affermazioni descrive correttamente la differenza tra DNA e RNA?",
+    options: ["Il DNA viene replicato, mentre I'RNA viene tradotto.", "Il DNA è situato nel nucleo, mentre l'RNA si trova esclusivamente fuori dal nucleo.", "I DNA è a singolo filamento, mentre l'RNA è a doppio filamento.", "Il DNA contiene quattro nucleotidi, mentre l'RNA ne contiene tre."],
+    correct: 0
+},
+{
+    text: "Le estremità di un filamento di DNA sono individuate dal termine 5' e 3'?",
+    options: ["A seconda della natura dell'ultimo zucchero presente (pentoso 0 esoso)", "A seconda che la base legata allo zucchero terminale sia una purina o una pirimidina", "Dal numero dell'atomo di carbonio dello zucchero che porta un gruppo terminale", "A seconda che si trovi un gruppo fosfato legato al carbonio 3' e un gruppo ossidrile legato al carbonio 5'"],
+    correct: 2
+},
+{
+    text: "Qual è la regola di Chargaff?",
+    options: ["Il numero di adenine è la metà di quello di timine e il numero di guanine è uguale a quello di citosine", "Il numero di adenine è uguale a quello di timine e il numero di guanine è uguale a quello di citosine", "Il numero di adenine è uguale a quello di timine e il numero di guanine è la metà di quello di citosine", "Il DNA è costituito da due filamenti avvolti ad alfa-elica"],
+    correct: 1
+},
+{
+    text: "Qual è la funzione dei telomeri?",
+    options: ["Sono sequenze che permettono ai cromosomi lineari di essere duplicati senza perdere informazioni genetiche", "Sono sequenze presenti sia nei procarioti che negli eucarioti", "Sono sequenze che determinano l'apoptosi", "Sono sequenze che portano all'invecchiamento cellulare"],
+    correct: 0
+},
+{
+    text: "Qual è la funzione della DNA elicasi?",
+    options: ["Legare i singoli filamenti impedendo il riappaiamento durante la replicazione", "Srotolare la doppia elica", "Riavvolgere i due filamenti dopo la replicazione", "Replicare il filamento di DNA"],
+    correct: 1
+},
+{
+    text: "Qual è la funzione della DNA polimerasi?",
+    options: ["Polimerizzare i nucleotidi aggiungendoli al terminale 3' della catena polinucleotidica in via di formazione", "Legare i frammenti di Okazaki tra loro per formare un filamento intero", "Fornire un innesco alla replicazione del DNA", "Polimerizzare i nucleotidi aggiungendoli al terminale 5' della catena polinucleotidica in via di formazione"],
+    correct: 0
+},
+{
+    text: "La replicazione del DNA è considerata un processo semiconservativo perché...?",
+    options: ["i nuovi filamenti di DNA devono essere copiati a partire da uno stampo di DNA.", "ciascuna molecola figlia di DNA è costituita da un filamento che deriva dalla molecola di DNA di partenza e da un nuovo filamento.", "dopo molti cicli di replicazione la doppia elica originaria è ancora intatta.", "ciascuna molecola figlia di DNA è costituita da due nuovi filamenti copiati dalla molecola di DNA di partenza."],
+    correct: 1
+},
+{
+    text: "La replicazione del DNA viene definita semiconservativa perché?",
+    options: ["Avviene soltanto in circa la metà delle cellule di un individuo", "Solo metà delle informazioni genetiche vengono duplicate", "Solo un filamento della doppia elica figlia è derivato direttamente dalla molecola della cellula madre", "Ogni filamento singolo contiene metà materiale genetico originale e metà di nuova sintesi"],
+    correct: 2
+},
+{
+    text: "Una funzione degli acidi nucleici è di...?",
+    options: ["codificare la sintesi degli acidi grassi.", "codificare la sintesi proteica.", "realizzare la fotosintesi.", "formare una membrana cellulare."],
+    correct: 1
+},
+{
+    text: "La trascrizione dell’RNA differisce dalla replicazione del DNA per alcuni aspetti fondamentali?",
+    options: ["Il filamento neo trascritto di RNA rimane appaiato al DNA stampo ed è complementare ad uno solo dei due filamenti di DNA, quello che contiene l’informazione genetica, che non ha sempre lo stesso orientamento.", "I filamento neo trascritto di RNA non rimane appaiato al DNA stampo ed è complementare ad uno solo dei due filamenti di DNA, quello che contiene l’informazione genetica, che è sempre il filamento con orientamento 3°-5°.", "Il filamento neo trascritto di RNA non rimane appaiato al DNA stampo ed è complementare ad uno solo dei due filamenti di DNA, quello che contiene l’informazione genetica, che non ha sempre lo stesso orientamento.", "Il filamento neo trascritto di RNA non rimane appaiato al DNA stampo ed è complementare ad uno solo dei due filamenti di DNA, quello che contiene l’informazione genetica, che è sempre il filamento con orientamento 5°-3°."],
+    correct: 2
+},
+{
+    text: "Il codice genetico trasforma la sequenza dei nucleotidi in 20 aminoacidi, ed è dato dalla?",
+    options: ["combinazione di 4 nucleotidi in gruppi di 4 elementi, tale per cui, , 4 per 4 per 4, per 4, genera 256 codoni", "combinazione di 3 nucleotidi in gruppi di 4 elementi, tale per cui, 3 per 3 per 3, per 3 genera 81 codoni", "combinazione di 3 nucleotidi in gruppi di 3 elementi, tale per cui, 3 per 3 per 3, genera 27 codoni", "combinazione di 4 nucleotidi in gruppi di 3 elementi, tale per cui, 4 per 4 per 4, genera 64 codoni"],
+    correct: 3
+},
+{
+    text: "Il codice genetico viene definito ridondante in quanto?",
+    options: ["quasi tutti gli amminoacidi sono codificati da più di un codone con l'eccezione di triptofano e metionina.", "quasi tutti gli amminoacidi sono codificati da più di un codone con l'eccezione di triptofano e lisina.", "quasi tutti gli amminoacidi sono codificati da più di un codone con l'eccezione di triptofano, cisteina e metionina.", "quasi tutti gli amminoacidi sono codificati da più di un codone con l'eccezione di cisteina e metionina."],
+    correct: 0
+},
+{
+    text: "Il codice genetico è ridondante e i codoni che codificano per lo stesso amminoacido sono detti?",
+    options: ["affini", "sinonimi", "equivalenti", "analoghi"],
+    correct: 1
+},
+{
+    text: "Quale delle seguenti affermazioni relative al codice genetico è corretta?",
+    options: ["dei 64 codoni del codice genetico 60 codoni codificano per amminoacidi, il codone AUG codifica per lo start della lettura, e i 4 codoni UAA, UAG, UUC e UGA codificano per il segnale di stop.", "dei 64 codoni del codice genetico 61 codoni codificano per amminoacidi, uno di questi, AUG anche per lo start della lettura, e i3 codoni UA A, UAG, e UGA codificano per il segnale di stop.", "dei 64 codoni del codice genetico 60 codoni codificano per amminoacidi, il codone AUG codifica per lo start della lettura, e i 3 codoni UAA, UAG, e UGA codificano per il segnale di stop.", "dei 64 codoni del codice genetico 60 codoni codificano per amminoacidi, il codone AUG codifica per lo start della lettura, e i 2 codoni UAA, e UAG, codificano per il segnale di stop."],
+    correct: 1
+},
+{
+    text: "Quale delle seguenti affermazioni relative alla trascrizione è corretta?",
+    options: ["La trascrizione dell'RNA inizia in coincidenza di una sequenza di DNA detta promotore e posta a -35 e a-10 del sito di inizio.", "La trascrizione dell'RNA inizia in coincidenza di una sequenza di DNA detta iniziatore e posta a -15 e a-10 del sito di inizio.", "La trascrizione dell'RNA inizia in coincidenza di una sequenza di DNA detta iniziatore e posta a -35 e a-10 del sito di inizio.", "La trascrizione dell'RNA inizia in coincidenza di una sequenza di DNA detta promotore e posta a -35 e a-15 del sito di inizio."],
+    correct: 0
+},
+{
+    text: "L’uracile è?",
+    options: ["Una pirimidina, fa’ da base complementare con la timina e fa due legami idrogeno con la timina", "Una purina, fa’ da base complementare all’adenina e fa due legami idrogeno con la l’adenina", "Una pirimidina, fa’ da base complementare all’adenina e fa tre legami idrogeno con la l’adenina", "Una pirimidina, fa’ da base complementare all’adenina e fa due legami idrogeno con la l’adenina"],
+    correct: 3
+},
+{
+    text: "Nel 1961 gli scienziati Crick e Brenner dimostrarono sperimentalmente che?",
+    options: ["Le sequenze dei quattro nucleotidi di un mRNA hanno una struttura a doppia elica", "La sequenza dei quattro nucleotidi di un mRNA viene letta per gruppi consecutivi di quattro elementi che costituiscono una combinazione di quattro ribonucleotidi dette codoni", "Nessuna delle risposte è corretta", "La sequenza dei quattro nucleotidi di un mRNA viene letta per gruppi consecutivi di tre elementi che costituiscono una combinazione di tre ribonucleotidi dette codoni"],
+    correct: 3
+},
+{
+    text: "L’RNA polimerasi è l'enzima che sintetizza il trascritto di RNA e?",
+    options: ["Aggiunge un nucleotide alla volta in direzione 3°-5° utilizzando i ribonucleotidi ATP, CTP, TTP e GTP", "Aggiunge un nucleotide alla volta in direzione 5°-3’ utilizzando i ribonucleotidi ATP, CTP, UTP e GTP", "Aggiunge un nucleotide alla volta in direzione 5°-3° utilizzando i ribonucleotidi ATP, CTP, TTP e GTP", "Aggiunge un nucleotide alla volta in direzione 3’-5’ utilizzando i ribonucleotidi ATP, CTP, UTP e GTP"],
+    correct: 1
+},
+{
+    text: "A partire da geni per RNA ribosomilae, le RNA polimerasi possono?",
+    options: ["Tutte le risposte sono vere", "Produrre un nuovo trascritto di RNA dallo stesso stampo di DNA solo se molto distanti", "Produrre molti trascritti di RNA contemporaneamente dallo stesso stampo di DNA", "Produrre uno solo trascritto di RNA dallo stesso stampo di DNA alla volta"],
+    correct: 0
+},
+{
+    text: "A cosa ci si riferisce con l'affermazione: regole di lettura che permettono di tradurre le informazioni contenute nell’mRNA in una sequenza di amminoacidi delle proteine?",
+    options: ["Al codice genetico", "AI codice della trascrizione", "AI codice della traduzione", "AI principio trasformante"],
+    correct: 0
+},
+{
+    text: "Gli RNA messaggeri vengono tradotti in proteine?",
+    options: ["Nell’apparato di Golgi", "Nel citoplasma", "Nel nucleo", "Nei lisosomi"],
+    correct: 1
+},
+{
+    text: "Quale tra le seguenti funzioni svolge PRNA messaggero (mRNA)?",
+    options: ["fa da stampo per l'allungamento del DNA durante la duplicazione del DNA", "trasporta gli amminoacidi e li colloca in posizione opportuna nella sequenza della proteina nascente sui ribosomi", "forma il nucleo strutturale dei ribosomi e ha importanti funzioni catalitiche nella sintesi delle proteine", "trascrive l’informazione genetica contenuta del DNA stampo"],
+    correct: 3
+},
+{
+    text: "Cosa si intende con il termine “reading frame” riferito all'mRNA?",
+    options: ["Il fatto che l'insieme di tutti i codoni dà il codice genetico, che è unico", "Il fatto che i codoni sono letti in sequenza partendo da un punto preciso dell’mRNA, per tanto il modulo di è unico", "Il fatto che l'insieme di tutti i codoni dà il codice genetico, che è universale", "Nessuna delle risposte è corretta"],
+    correct: 1
+},
+{
+    text: "Quanti tipi di DNA hanno i batteri?",
+    options: ["Due", "Quattro", "Tre", "Una"],
+    correct: 0
+},
+{
+    text: "Da quale tipo di RNA polimerasi il DNA viene trascritto in RNA messaggero nelle cellule eucariotiche?",
+    options: ["Dalla RNA polimerasi II", "Dalla RNA polimerasi I e III", "Dalla RNA polimerasi I", "Dalla RNA polimerasi III"],
+    correct: 0
+},
+{
+    text: "Quale delle seguenti affermazioni relative all'RNA è corretta?",
+    options: ["L’RNA polimerasi si lega alla sequenza di DNA detta iniziatore che viene trascritto.", "L’RNA polimerasi si lega alla sequenza di DNA detta iniziatore che non viene trascritto.", "L’RNA polimerasi si lega alla sequenza di DNA detta promotore che viene trascritto.", "L’RNA polimerasi si lega alla sequenza di DNA detta promotore che non viene trascritta."],
+    correct: 3
+},
+{
+    text: "Quale delle seguenti affermazioni sullo splicing del pre-mRNA è falsa?",
+    options: ["Può essere 'alternativo' e portare alla formazione di mRNA maturi diversi", "Dopo la rimozione degli introni gli esoni vengono legati insieme", "Nei geni degli eucarioti questo processo provvede alla rimozione degli introni.", "Si tratta di un processo comune nei procarioti."],
+    correct: 3
+},
+{
+    text: "Quale ruolo ha l’apposizione della coda di poli A al 3’ sulla stabilità dell'mRNA?",
+    options: ["Più è lunga la coda di poliA, più I'mRNA è stabile", "Più è lunga la coda di poliA, più l'mRNA è instabile", "Più è corta la coda di poliA, più I'mRNA è stabile", "La coda di poliA non ha nessun effetto sulla stabilità dell'mRNA"],
+    correct: 0
+},
+{
+    text: "Quale caratteristica riguardo i geni distingue i procarioti dagli eucarioti?",
+    options: ["A differenza degli eucarioti, i geni dei procarioti contengono lunghe sequenze interposte tra le sequenze codificanti.", "A differenza degli eucarioti, i geni dei procarioti non contengono lunghe sequenze interposte tra le sequenze codificanti ma contengono il cappuccio 5°.", "A differenza dei procarioti, i geni degli eucarioti contengono il promotore.", "A differenza dei procarioti, i geni degli eucarioti contengono lunghe sequenze interposte tra le sequenze codificanti."],
+    correct: 3
+},
+{
+    text: "Cosa vuol dire che il codice genetico è ridondante?",
+    options: ["Tutte le risposte sono corrette", "Il fatto che diversi amminoacidi possono essere legati da uno stesso tipo di tRNA, corrispondente ad un codone", "Il fatto che uno stesso tRNA può trasportare 2 aminoacidi contemporaneamente, uno all’estremità 3 primo e uno all’estremità 5 primo", "Il fatto che un amminoacido può essere legato da più tRNA, corrispondenti a diversi codoni"],
+    correct: 1
+},
+{
+    text: "Il tRNA che ha l’anticodone lega un determinato amminoacido che viene legato alla catena polipeptidica nascente; dove è legato l’amminoacido?",
+    options: ["L’amminoacido è legato all’anticodone", "L’amminoacido può legarsi indifferentemente al terminale 3 primo o 5 primo, per questo motivo si dice che il codice genetico è degenerato", "L’amminoacido è legato all’estremità 3 primo del tRNA", "L’amminoacido è legato all’estremità 5 primo del tRNA"],
+    correct: 2
+},
+{
+    text: "Che cosa è l’anticodone?",
+    options: ["L’anticodone è il gruppo chimico dell’amminoacido che consente il legame con mRNA durante la sintesi della catena polipeptidica", "L’anticodone è la tripletta di basi nucleotidiche presente sul tRNA complementare a quella presente sul DNA (codone) e che si appaia con esso", "Nessuna delle risposte è corretta", "L’anticodone è la tripletta di basi nucleotidiche presente sul tRNA complementare a quella presente sul mRNA (il codone) e che si appaia con esso"],
+    correct: 3
+},
+{
+    text: "Qual è la struttura dei RNA transfer (tRNA)?",
+    options: ["I tRNA sono formati da un singolo filamento di RNA di 200-300 nucleotidi che si ripiega per assumere una forma specifica con quattro diverse anse (o loop), anche detta struttura a quadrifoglio", "I tRNA sono formati da un singolo filamento di RNA di 70-80 nucleotidi che si ripiega per assumere una forma specifica con tre diverse anse (o loop), anche detta struttura a trifoglio", "I tRNA sono formati da un singolo filamento di RNA di 200-300 nucleotidi che si ripiega per assumere una forma specifica con tre diverse anse (0 loop), anche detta struttura a trifoglio", "I tRNA sono formati da un singolo filamento di RNA di 70-80 nucleotidi che si ripiega per assumere una forma specifica con quattro diverse anse (o loop), anche detta struttura a quadrifoglio"],
+    correct: 3
+},
+{
+    text: "Quale tipologia di molecola porta l'informazione trascritta dalla RNA polimerasi II?",
+    options: ["l'RNA transfer", "l'RNA messaggero", "l'RNA ribosomiale", "Tutte queste tipologie di RNA"],
+    correct: 1
+},
+{
+    text: "Iribosomi hanno tre siti dove vengono legati i tRNA, e sono detti?",
+    options: ["Per i tRNA ci sono tre siti di legame A, Pe E", "Per i tRNA ci sono tre siti di legame A, Pe U", "Per i tRNA ci sono tre siti di legame H2, H3 e H4", "Per i tRNA ci sono tre siti di legame A, Be C"],
+    correct: 0
+},
+{
+    text: "Cosa è il codice genetico?",
+    options: ["Le 64 triplette che specificano i 20 aminoacidi delle proteine", "La sequenza di nucleotidi nel DNA", "I geni presenti nel DNA", "I diversi alleli per ogni carattere"],
+    correct: 0
+},
+{
+    text: "Che tipo di RNA è l'rRNA?",
+    options: ["È I'RNA che concorre alla formazione del ribosoma", "È I'RNA con molecola lineare che si occupa di trasferire gli aminoacidi sul ribosoma", "È I'RNA con molecola a trifoglio che contiene l'informazione per la sintesi delle proteina", "È I'RNA con molecola a trifoglio che si occupa di trasferire gli aminoacidi sul ribosoma"],
+    correct: 0
+},
+{
+    text: "A cosa ci si riferisce quando si afferma che i geni eucariotici contengono esoni?",
+    options: ["AI fatto che la DNA polimerasi trascriva solo le sequenze del gene dette appunto esoni", "AI fatto che i geni eucariotici contengono sequenze codificanti, gli esoni, frammiste a sequenze non codificanti, gli introni", "AI fatto che la RNA polimerasi trascriva solo le sequenze del gene dette appunto esoni", "AI fatto che nei geni eucariotici alcune sequenze siano più esterne, esoni, e altre più interne, introni"],
+    correct: 1
+},
+{
+    text: "A cosa è dovuta la ridondanza del codice genetico?",
+    options: ["AI fatto che l’appaiamento tra codone e anticodone è molto accurato per ogni base della tripletta del codone", "AI fatto che l’appaiamento tra codone e anticodone è oscillante ed è accurato solo per la prima base della tripletta del codone", "AI fatto che l’appaiamento tra codone e anticodone è oscillante ed è accurato solo per le prime due basi della tripletta del codone", "AI fatto che l’appaiamento tra codone e anticodone è una condizione probabilistica e si verifica solo nel 50% dei casi"],
+    correct: 2
+},
+{
+    text: "Quanti sono i geni per i tRNA nell’uomo e per quanti anticodoni codificano?",
+    options: ["Nell’uomo esistono 500 geni per i tRNA che codificano solo 64 anticodoni", "Nell'uomo esistono 48 geni per i tRNA che codificano solo 500 anticodoni", "Nell’uomo esistono 500 geni per i tRNA che codificano solo 48 anticodoni", "Nell'uomo esistono 64 geni per i tRNA che codificano solo 64 anticodoni"],
+    correct: 2
+},
+{
+    text: "Perché il materiale genetico di una cellula possa essere usato, prima l'informazione viene copiata dal DNA in una sequenza nucleotidica di RNA in un processo chiamato . Vengono prodotti vari tipi di RNA, ciascuno con diverse funzioni. Tra di essi, le molecole di codificano per le proteine, le molecole di agiscono come adattatori per la sintesi delle proteine, le molecole di sono componenti integrali dei ribosomi e le molecole di sono importanti nello splicing dei trascritti di RNA?",
+    options: ["trascrizione, mRNA, tRNA, rRNA, snRNA", "traduzione, tRNA, mRNA, rRNA, snRNA", "traduzione, mRNA, tRNA, rRNA, microRNA", "trascrizione, tRNA, mRNA, rRNA, snRNA"],
+    correct: 0
+},
+{
+    text: "L’amminoacido è legato al 3’ del tRNA da particolari enzimi chiamati aminoacil-tRNA-sintetasi; quanti sono i tipi di aminoacil-tRNA-sintetasi?",
+    options: ["Esistono 20 tipi aminoacil-tRNA-sintetasi, una sintetasi specifica per ciascun amminoacido", "Tutte le risposte sono vere", "Esistono 64 tipi aminoacil-tRNA-sintetasi, una sintetasi specifica per ciascun codone", "Esistono 61 tipi aminoacil-tRNA-sintetasi, una sintetasi specifica per ciascun codone codificante"],
+    correct: 0
+},
+{
+    text: "Durante la trascrizione la molecola di mRNA cresce?",
+    options: ["In direzione 3' - 5'", "Nella stessa direzione in cui viene letto il DNA stampo", "In direzione 5' - 3'", "In entrambe le direzioni, partendo dal centro"],
+    correct: 2
+},
+{
+    text: "Quale delle seguenti affermazioni sugli RNA transfer (tRNA) è falsa?",
+    options: ["Presentano un anticodone", "Interagiscono con l'mRNA.", "Possono variare gli amminoacidi che legano.", "Interagiscono con i ribosomi.", "Da cosa è formato il ribosoma? (3)", "I ribosomi sono formati da quattro subunità contenti oltre 160 proteine e 8 rRNA; la subunità maggiore è formata da 98 proteine e 6 rRNA e la subunità maggiore è formata da 66 proteine e 2 rRNA", "I ribosomi sono formati da due subunità contenti oltre 160 proteine e 8 rRNA; la subunità maggiore è formata da 98 proteine e 6 rRNA e la subunità maggiore è formata da 66 proteine e 2 rRNA", "I ribosomi sono formati da due subunità contenti oltre 80 proteine e 4 rRNA; la subunità maggiore è formata da 49 proteine e 3 rRNA e la subunità maggiore è formata da 33 proteine e 1 rRNA", "I ribosomi sono formati da due subunità contenti oltre 40 proteine e 2 rRNA; la subunità maggiore è formata da 25 proteine e 2 rRNA e la subunità maggiore è formata da 16 proteine e 1 rRNA"],
+    correct: 2
+},
+{
+    text: "Come possono essere i ribosomi?",
+    options: ["I ribosomi possono essere sia associati al reticolo endoplasmatico che liberi nel citoplasma", "I ribosomi possono essere sia associati ai lisosomi che liberi nel citoplasma", "Tutte le risposte sono vere", "I ribosomi possono essere sia associati all'apparato del Golgi che liberi nel citoplasma"],
+    correct: 0
+},
+{
+    text: "Quale delle seguenti affermazioni è corretta?",
+    options: ["Molte proteine sono comuni a tutti i tipi di cellule e sono dette costitutive o dall’inglese housework proteins, cioè di manutenzione straordinaria.", "Molte proteine sono comuni a tutti i tipi di cellule e sono dette costitutive o dall’inglese housework proteins", "Molte proteine sono comuni a tutti i tipi di cellule e sono dette costitutive o dall’inglese housekeeping, cioè di manutenzione ordinaria.", "Poche proteine sono comuni a tutti i tipi di cellule"],
+    correct: 2
+},
+{
+    text: "Quale delle seguenti affermazioni è corretta?",
+    options: ["Le proteine housekeeping, cioè di manutenzione ordinaria, includono solo le proteine per la sintesi del DNA, dell’RNA", "Le housework proteins includono le proteine per la sintesi del DNA, dell'RNA, degli enzimi per la respirazione cellulare, della glicolisi, e per tutti i processi fondamentali che servono la sopravvivenza della cellula in vita", "Le proteine housekeeping, cioè di manutenzione ordinaria, includono le proteine per la sintesi del DNA, dell'RNA, gli enzimi per la respirazione cellulare, per la glicolisi, e per tutti i processi fondamentali che servono alla sospravvivenza della cellula in vita.", "Le proteine housekeeping, cioè di manutenzione ordinaria, includono le proteine per la sintesi delle proteine specializzate che caratterizzano lo specifico tipo cellulare"],
+    correct: 2
+},
+{
+    text: "Che cosa è l’ubiquitina?",
+    options: ["Una proteina ubiquitaria che si lega ad altre proteine e indica che non devono essere degradate da parte del proteosoma", "Una proteina chinasi molto rappresentata nel tessuto muscolare, nervoso, epatico ed endocrino", "Una proteina chinasi molto rappresentata nel tessuto muscolare, nervoso, epatico ed endocrino, ed epiteliale", "Una proteina segnale che si lega ad altre proteine e ne indica la degradazione da parte del proteosoma"],
+    correct: 3
+},
+{
+    text: "Quali di questi meccanismi si definisce un controllo post-traduzionale della espressione genica?",
+    options: ["Controllo della degradazione dell’mRNA;", "Degradazione della proteina;", "Controllo della trascrizione;", "Controllo della traduzione;"],
+    correct: 1
+},
+{
+    text: "Quali di questi meccanismi si definisce un controllo post-traduzionale della espressione genica?",
+    options: ["Ripiegamento della proteina ad opera di chaperoni;", "Controllo della trascrizione;", "Controllo della degradazione dell’mRNA;", "Controllo della traduzione;"],
+    correct: 0
+},
+{
+    text: "L’espressione genica ha vari punti di controllo: controllo della maturazione dell’RNA (A); controllo della dell’attività proteica e degradazione della proteina (B); controllo del trasporto e della localizzazione dell’RNA e della degradazione dell’'mRNA (C); controllo della traduzione (D); controllo della trascrizione (E); in quali di questi controlli interviene il proteosoma, in quale l’ubiquitina?",
+    options: ["Il proteosoma in E; l’ubiquitina in A", "Il proteosoma in B; l’ubiquitina in B", "Nessuna delle risposte è corretta", "Il proteosoma in D; l’ubiquitina in B"],
+    correct: 1
+},
+{
+    text: "L’espressione genica ha vari punti di controllo: controllo della maturazione dell’RNA (A); controllo della dell’attività proteica e degradazione della proteina (B); controllo del trasporto e della localizzazione dell’RNA e della degradazione dell’mRNA (C); controllo della traduzione (D); controllo della trascrizione (E); in quali di questi controlli interviene il proteosoma, in quale l’ubiquitina?",
+    options: ["Nessuna delle risposte è corretta", "Il proteosoma in D; l’ubiquitina in B", "Il proteosoma in D; l’ubiquitina in D", "Il proteosoma in D; l’ubiquitina in B"],
+    correct: 0
+},
+{
+    text: "L’espressione genica ha vari punti di controllo: controllo della maturazione dell’RNA (A); controllo della dell’attività proteica e degradazione della proteina (B); controllo del trasporto e della localizzazione dell’RNA e della degradazione dell’'mRNA (C); controllo della traduzione (D); controllo della trascrizione (E); quali di questi controlli avvengono nel nucleo e quali nel citoplasma?",
+    options: ["AB nel nucleo; CDE nel citoplasma", "EB nel nucleo e ACD nel citoplasma", "EAC nel nucleo; DB nel citoplasma", "EA nel nucleo; CDB nel citoplasma"],
+    correct: 2
+},
+{
+    text: "Cosa sono i fattori di trascrizione?",
+    options: ["Proteine modulari con un solo dominio che legano il DNA aumentando l'efficienza della trascrizione", "Proteine modulari con più di un dominio che legano l'RNA aumentando l'efficienza della trascrizione", "Proteine modulari con più di un dominio che legano il DNA e un attivatore/repressore della trascrizione per aumentarne l'efficienza", "RNA ribosominali che legano il DNA diminuendo l'efficienza della trascrizione"],
+    correct: 2
+},
+{
+    text: "L'epigenetica si riferisce a cambiamenti..?",
+    options: ["nella struttura genica", "nella sequenza di DNA", "tutte le risposte sono corrette", "nell'espressione genica"],
+    correct: 3
+},
+{
+    text: "La trasmissione dell'informazione importante per la regolazione genica dalla cellula madre alla cellula figlia — senza alterazione della sequenza nucleotidica di partenza — è detta eredità -. Questo tipo di eredità può evidenziarsi con una modifica covalente, la » che interessa le basi di citosina, le quali tipicamente spengono la trascrizione di un gene.",
+    options: ["mendeliana, metilazione", "epigenetica, metilazione", "epigenetica, acetilazione", "poligenica, trascrizione"],
+    correct: 1
+},
+{
+    text: "A volte la sequenza di DNA subisce una mutazione e un'adenina è appaiata con una citosina. Perché questa interazione risulta instabile?",
+    options: ["Le cariche delle due basi si respingono tra loro", "Tra le due basi non si può formare un legame ionico", "I gruppi fosfato delle due basi si respingono tra loro", "I gruppi chimici che formano i legami idrogeno sono nelle posizioni sbagliate"],
+    correct: 3
+},
+{
+    text: "Che cos'è un introne?",
+    options: ["Un polipeptide che viene rimosso da una grande proteina con modificazione post-traduzionale", "Parte di un mRNA maturo e integro che esce dal nucleo", "Parte di un trascritto di RNA che non è presente nel DNA stampo", "Una sequenza di RNA che viene rimossa durante il processamento di una molecola di RNA nel nucleo"],
+    correct: 3
+},
+{
+    text: "Un neurone ed un globulo bianco sono cellule diverse perchè?",
+    options: ["Il neurone esprime alcuni mRNA che il globulo bianco non esprime", "Il neurone ed il globulo bianco hanno lo stesso genoma", "Le proteine espresse nei neuroni sono completamente differenti da quelle dei globuli bianchi.", "Il neurone ed il globulo bianco sono cellule differenziate che non devono più trascrivere e tradurre geni"],
+    correct: 0
+},
+{
+    text: "Quanti sono gli istoni all'interno dei nucleosomi?",
+    options: ["8", "9+2", "4", "12"],
+    correct: 0
+},
+{
+    text: "Quale delle seguenti affermazioni riguardante l'emivita dell'mRNA è falsa?",
+    options: ["L'emivita della maggior parte degli mRNA batterici è più breve dell'emivita di un tipico mRNA eucariotico", "Le regioni non tradotte 5' e 3' di un mRNA spesso contengono specifiche sequenze che determinano l'emivita della molecola di mRNA", "L'emivita degli mRNA prodotti da geni differenti è più variabile rispetto all'emivita degli mRNA prodotti dallo stesso gene", "L'emivita della maggior parte degli mRNA eucariotici è superiore alle 24 ore"],
+    correct: 3
+},
+{
+    text: "Le modificazioni epigenetiche sono?",
+    options: ["Modificazioni del DNA come l'aggiunta di gruppi metile alle citosine", "Modificazioni della sequenza del DNA", "Modificazioni degli introni", "Modificazioni del DNA come l'aggiunta di gruppi metile al desossiribosio"],
+    correct: 0
+},
+{
+    text: "I geni che si trovano nelle regioni di eterocromatina?",
+    options: ["vengono trascritti più facilmente", "vengono spenti", "vengono trascritti meno facilmente", "vengono tradotti più facilmente"],
+    correct: 1
+},
+{
+    text: "Gli istoni?",
+    options: ["vengono legati insieme durante lo splicing", "vengono rimossi durante lo splicing", "fanno parte della cromatina", "vengono trascritti insieme agli esoni"],
+    correct: 2
+},
+{
+    text: "Mediante quale meccanismo l’APC (dall’inglese anaphase promoting complex) induce degradazione del complesso M-CDK che spinge la cellula ad uscire dalla mitosi?",
+    options: ["L’APC defosforila le cicline del complesso M-CDK e in questo modo le disattiva", "L’APC fosforila le cicline del complesso M-CDK e in questo modo le disattiva", "L’APC lega molecole di ubiquitina alle cicline del complesso M-CDK e in questo modo le indirizza verso degradazione attuata dal complesso del proteosoma", "L’APC fosforila la proteina Rb, che fosforilata è inattiva e libera un regolatore della trascrizione dei geni che spingono verso l’uscita dalla mitosi"],
+    correct: 2
+},
+{
+    text: "Il ciclo cellulare degli eucarioti è una serie ordinata di eventi grazie ai quali la cellula duplica il suo contenuto e poi si divide in due per riprodursi. Di quante fasi si compone il ciclo cellulare e in che ordine temporale si susseguono?",
+    options: ["Il ciclo cellulare degli eucarioti comprende 5 fasi: G0, G1, S, G2, e M", "Il ciclo cellulare degli eucarioti comprende 4 fasi: G1, S, G2, e M", "Il ciclo cellulare degli eucarioti comprende 4 fasi: GO, S, G1, e M", "Il ciclo cellulare degli eucarioti comprende 5 fasi: G1, S, G2, GO eM"],
+    correct: 1
+},
+{
+    text: "Quanti sono i punti di controllo del ciclo cellulare e in quali fasi del ciclo cellulare sono temporalmente collocati?",
+    options: ["Sono quattro; un primo punto di controllo è tra G1 e S; un secondo punto di controllo è G2 e M; un terzo punto di controllo è nella anafase della mitosi della fase M, un quarto punto di controllo è nella telofase della mitosi della fase M", "Sono due; un primo punto di controllo è tra GI e S; un secondo punto di controllo è G2 e M", "Sono tre; un primo punto di controllo è tra G1 e S; un secondo punto di controllo è G2 e M; un terzo punto di controllo è nella anafase della mitosi della fase M", "Sono tre; un primo punto di controllo è tra GO e G1; un secondo punto di controllo è S e M; un terzo punto di controllo è nella anafase della mitosi della fase M"],
+    correct: 2
+},
+{
+    text: "Per passare dalla fase M alla fase G1 il complesso di controllo del ciclo cellulare?",
+    options: ["Deve attivare tutti i complessi S-G1/S Cdk e Cdc6", "Deve attivare tutti i complessi S-Cdk e M-Cdk", "Deve inattivare tutti i complessi G1/Cdk e G1/S Cdk", "Deve inattivare tutti i complessi S-Cdk e M-Cdk"],
+    correct: 3
+},
+{
+    text: "Qual è lo stato della proteina Rb in una cellula in G0 o quando la cellula è privata di mitogeni?",
+    options: ["La proteina è fosforilata ed attiva, in questo stato Rb inattiva un regolatore della trascrizione che impedisce la trascrizione di geni per l’entrata nella fase S", "La proteina è decarbossilata ed attiva, in questo stato Rb inattiva un regolatore della trascrizione che impedisce la trascrizione di geni per l’entrata nella fase S", "La proteina è defosforilata ed inattiva, in questo stato Rb inattiva un regolatore della trascrizione che impedisce la trascrizione di geni per l’entrata nella fase S", "La proteina è defosforilata ed attiva, in questo stato Rb inattiva un regolatore della trascrizione che impedisce la trascrizione di geni per l’entrata nella fase S"],
+    correct: 3
+},
+{
+    text: "Generalmente cosa inattiva la proteina Rb e come questo porta alla fase S?",
+    options: ["I mitogeni facilitano la fosforilazione di Rb, che defosforilata si inattiva e libera un regolatore della trascrizione che così può attivare la trascrizione di geni per entrare in fase S", "I mitogeni facilitano la fosforilazione di Rb, che fosforilata si inattiva e libera un regolatore della trascrizione che così può attivare la trascrizione di geni per entrare in fase S", "I mitogeni facilitano la fosforilazione di Rb, che fosforilata si inattiva e libera un regolatore della trascrizione che così può attivare la trascrizione di geni per entrare in fase S", "I mitogeni inibiscono la fosforilazione di Rb, che defosforilata si attiva e libera un regolatore della trascrizione che così può attivare la trascrizione di geni per entrare in fase S"],
+    correct: 1
+},
+{
+    text: "Se i complessi S-Cdk e M-Cdk non vengono inattivati alla fine della mitosi, cosa accade?",
+    options: ["La fase S riparte velocemente", "Si hanno le divisioni di segmentazione, tipiche delle prime fasi dell’embriogenesi", "Tutte le affermazioni sono vere", "La cellula non ha il tempo di accrescersi perché viene saltata la fase G1 e riparte un nuovo ciclo cellulare"],
+    correct: 3
+},
+{
+    text: "Mediante quale meccanismo cellulare i mitogeni facilitano l’inattivazione di Rb?",
+    options: ["nessuna delle risposte è corretta", "I mitogeni attivano una cascata di segnalazione cellulare che attiva i complessi G1-Cdk e G1/S-Cdk che fosforilano la proteina Rb, e la inattivano.", "I mitogeni attivano la proteina p53 che attiva i complessi G1-Cdk e G1/S-Cdk che fosforilano la proteina Rb, e la inattivano.", "I mitogeni attivano una cascata di segnalazione cellulare che inattiva i complessi G1-Cdk e G1/S-Cdk che defosforilano la proteina Rb, e la attivano."],
+    correct: 1
+},
+{
+    text: "Quando inizia ad accumularsi il complesso M-Cdk, sebbene inattivo?",
+    options: ["Il complesso M-Cdk inizia ad accumularsi nella fase S, ma è ancora inattivo", "Il complesso M-Cdk inizia ad accumularsi già nella fase G1 dell’interfase, ma è ancora inattivo", "Il complesso M-Cdk inizia ad accumularsi nella fase M, ma è ancora inattivo", "Il complesso M-Cdk inizia ad accumularsi già nella fase G2 dell’interfase, ma è ancora inattivo"],
+    correct: 3
+},
+{
+    text: "Nei primi stadi della fase M, i due cromatidi fratelli di un cromosoma sono tenuti insieme da?",
+    options: ["I due cromatidi fratelli sono tenuti insieme dalle condensine che formano anelli che cingono i cromatidi fratelli", "I due cromatidi fratelli sono tenuti insieme da actina che formano spirali con le teste polari che cingono i cromatidi fratelli", "I due cromatidi fratelli sono tenuti insieme dalle coesine che formano spirali con le teste polari che cingono i cromatidi fratelli", "I due cromatidi fratelli sono tenuti insieme dalle coesine che formano anelli che cingono i cromatidi fratelli"],
+    correct: 3
+},
+{
+    text: "Quante molecole di DNA contiene un cromosoma all'inizio della fase M?",
+    options: ["Due molecole di DNA: ogni cromosoma condensato è formato da due cromatidi fratelli identici, ciascuno costituito da una unica molecola di DNA", "Otto molecole di DNA: ogni cromosoma condensato è un tetravalente formato da quattro cromatidi, ciascuno costituito da una unica molecola di DNA", "Nessuna risposta è corretta", "Quattro molecole di DNA: ogni cromosoma condensato è un bivalente formato da quattro cromatidi, ciascuno costituito da una unica molecola di DNA"],
+    correct: 0
+},
+{
+    text: "All’inizio della mitosi, avviene la condensazione dei cromosomi ad opera delle condensine. Questo processo è coadiuvato da?",
+    options: ["Dalle coesine", "Dal compresso S-Cdk", "Dalla proteina Rb", "Dal complesso M-Cdk che fosforila le condensine"],
+    correct: 3
+},
+{
+    text: "Come si chiama la struttura dinamica durante la metafase della mitosi in cui i cromosomi sono allineati sul piano equatoriale?",
+    options: ["si chiama piastra equatoriale", "si chiama piastra cromosomica", "tutte le risposte sono corrette", "si chiama piastra metafasica"],
+    correct: 3
+},
+{
+    text: "Negli stadi iniziali della fase M, il cinetocore si lega a?",
+    options: ["I microtubuli del fuso mitotico (microtubuli interpolari) e al centrosoma di ciascun cromatidio", "I microtubuli del fuso mitotico (microtubuli interpolari) e al centromero di ciascun cromatidio", "I microtubuli del fuso mitotico (microtubuli del cinetocore) e al centromero di ciascun cromatidio", "I microtubuli del fuso mitotico (microtubuli del cinetocore) e al centrosoma di ciascun cromatidio"],
+    correct: 2
+},
+{
+    text: "Quali apparati citoscheletrici transitori assistono gli stadi finali della fase M?",
+    options: ["Uno apparato citoscheletrico: il fuso mitotico, composto da filamenti di actina e miosina, che effettua la mitosi", "Due apparati citoscheletrici: il fuso mitotico, composto da filamenti di actina e miosina, che effettua la mitosi e l'anello contrattile, composto da microtubuli, che effettua la citochinesi", "Due apparati citoscheletrici: il fuso mitotico, composto da microtubuli, che effettua la mitosi e l’anello contrattile, composto da filamenti di actina e miosina, che effettua la citochinesi", "Tre apparati citoscheletrici: il fuso mitotico, composto da microtubuli, che effettua la mitosi, l’aster, composto da microtubuli che effettua la segregazione dei cromosomi e l’anello contrattile, composto da filamenti di actina e miosina, che effettua la citochinesi"],
+    correct: 2
+},
+{
+    text: "Il complesso M-Cdk inizia ad accumularsi già nella fase G2 ma è inattivo; quando viene attivato e come?",
+    options: ["I complesso M-Cdk subisce una rapida attivazione nei primi stadi della mitosi da parte della proteina p53", "I complesso M-Cdk subisce una rapida attivazione nei primi stadi della mitosi da parte della proteina chinasi Cdc21", "Il complesso M-Cdk subisce una rapida attivazione nei primi stadi della mitosi da parte della proteina fosfatasi Cdc25", "I complesso M-Cdk subisce una rapida attivazione nei primi stadi della mitosi da parte della proteina Rb"],
+    correct: 2
+},
+{
+    text: "Qual è processo che innesca l’anafase della mitosi?",
+    options: ["L'anafase è innescata all’improvviso dalla rottura degli anelli delle condensine che tengono insieme i cromatidi fratelli, che sono ora liberi di migrare verso i poli opposti", "L'anafase è innescata all’improvviso dalla rottura degli anelli delle coesine che tengono insieme i cromatidi fratelli, che sono ora liberi di migrare verso i poli opposti", "L'anafase è innescata all’improvviso dalla rottura degli anelli delle coesine che tengono insieme i cromatidi fratelli, che sono ora liberi di migrare verso i poli opposti trascinati dai filamenti di actina legati al cinetocore", "L'anafase è innescata all’improvviso dalla rottura degli anelli delle coesine che tengono insieme i cromatidi fratelli, che sono ora liberi di migrare verso i poli opposti, che sono ora liberi di migrare verso i poli opposti trascinati dai microtubuli legati al centrosoma"],
+    correct: 3
+},
+{
+    text: "Quali sono i meccanismi che portano alla rottura degli anelli di coesine all’inizio dell’anafase della mitosi?",
+    options: ["Una proteasi, la separalisina, rompe gli anelli delle coesine", "Il proteosoma rompe gli anelli delle coesine", "Una proteasi, la separasi, rompe gli anelli delle coesine", "Il complesso del proteosoma APC/C rompe gli anelli delle coesine"],
+    correct: 2
+},
+{
+    text: "Come viene mantenuta la proteasi separasi prima dell’anafase e mediante quale meccanismo?",
+    options: ["La separasi viene mantenuta in uno stato inattivo durante la profase, la prometafase e la metafase, da una proteina inibitrice che si chiama securina", "La separasi viene mantenuta in uno stato inattivo durante la profase, la prometafase e la metafase, da una proteina inibitrice che si chiama condensina", "La separasi viene mantenuta in uno stato inattivo durante la profase, la prometafase e la metafase, da una proteina inibitrice che si chiama sirtuina", "La separasi viene mantenuta in uno stato attivo durante la profase, la prometafase e la metafase, da una proteina attivatrice che si chiama securina"],
+    correct: 0
+},
+{
+    text: "Qual è il meccanismo d’innesco che dà avvio all’anafase?",
+    options: ["L’inattivazione della proteina inibitrice della proteasi separasi denominata securina; la securina viene degradata dal proteosoma su indicazione del complesso ubiquitina ligasi APC/C (dall’inglese anaphase- promoting complex or cyclosome)", "L’attivazione della proteina inibitrice della proteasi separasi denominata securina; la securina viene attivata dal proteosoma su indicazione del complesso ubiquitina ligasi APC/C (dall'inglese anaphase- promoting complex or cyclosome)", "L’inattivazione della proteina inibitrice della proteasi separasi denominata securina; la degradazione della securina attuata dal complesso APC/C (dall’inglese anaphase- promoting complex or cyclosome)", "L’inattivazione della proteina inibitrice della proteasi separasi denominata sirtuina; la sirtuina viene degradata dal proteosoma su indicazione del complesso ubiquitina ligasi APC/C (dall’inglese anaphase- promoting complex or cyclosome)"],
+    correct: 0
+},
+{
+    text: "Crei delle cellule che esprimono una forma di cdcé che non può essere fosforilata e quindi non può essere degradata. Quale sarà la conseguenza più probabile di questo cambiamento?",
+    options: ["Il complesso ORC non riuscirà a legarsi al DNA", "La cdc6 sarà prodotta inappropriatamente durante la fase M", "Le cellule non riusciranno a completare la sintesi del DNA", "Le cellule entrano in fase S prematuramente"],
+    correct: 2
+},
+{
+    text: "Cosa è la fase M del ciclo cellulare?",
+    options: ["Il periodo di tempo in cui la cellula va incontro a mutazioni", "Il periodo di tempo del ciclo cellulare che corrisponde alla crescita della cellula", "Il periodo di tempo del ciclo cellulare in cui si duplica il DNA", "Il periodo di tempo in cui la cellula va incontro a mitosi"],
+    correct: 3
+},
+{
+    text: "Cosa è la mitosi?",
+    options: ["La fase del ciclo cellulare in cui il DNA è copiato", "Il processo di divisione nucleare dal quale si ottengono due nuclei figli con lo stesso patrimonio genetico del nucleo della cellula madre", "La fase del ciclo cellulare in cui il DNA si replica", "Il processo di divisione nucleare dal quale si ottengono due nuclei figli con patrimonio genetico dimezzato rispetto al nucleo della cellula madre"],
+    correct: 1
+},
+{
+    text: "Alla fine della replicazione del DNA i cromatidi fratelli sono tenuti insieme da?",
+    options: ["coesine", "cinetocori", "istoni", "securine"],
+    correct: 0
+},
+{
+    text: "L'inibizione della fosfatasi attivatrice cde25 durante il ciclo cellulare?",
+    options: ["promuove il differenziamento terminale della cellula", "blocca l'entrata in mitosi", "blocca l'entrata in fase S", "inibisce l'attivazione dell'APC"],
+    correct: 1
+},
+{
+    text: "Quale dei seguenti eventi NON si verifica durante l'interfase?",
+    options: ["La sintesi proteica.", "La condensazione della cromatina.", "La sintesi di componenti cellulari necessari per la mitosi", "La replicazione del DNA."],
+    correct: 1
+},
+{
+    text: "Quale delle seguenti affermazioni è falsa?",
+    options: ["Il reclutamento dei complessi di riconoscimento dell'origine (ORC) è innescato dalla S-Cdk.", "La sintesi del DNA inizia dalle origini di replicazione.", "La cdcé si stacca quando l'elicasi si lega al complesso di riconoscimento dell'origine (ORC) a formare il complesso pre-replicativo", "La fosforilazione e la degradazione della Cdc6 contribuisce ad assicurare che il DNA venga replicato una volta sola per ogni ciclo cellulare."],
+    correct: 0
+},
+{
+    text: "Per ognuno dei processi elencati indica lo stadio preciso della fase M in cui avviene: Allineamento dei cromosomi all'equatore del fuso mitotico: s Disgregazione dell'involucro nucleare e collegamento dei microtubuli del fuso con i cromosomi: ; Suddivisione della cellula in due parti: î Ricostituzione dell'involucro nucleare: ; Condensazione dei cromosomi, separazione dei due centrosomi e inizio dell'assemblaggio del fuso mitotico: ; Separazione dei cromatidi fratelli?",
+    options: ["metafase; prometafase; citochinesi; anafase; profase; telofase", "metafase; prometafase; citochinesi; telofase; profase; anafase", "prometafase; metafase; telofase; citochinesi; profase; anafase", "metafase; profase; citochinesi; telofase; prometafase; anafase"],
+    correct: 1
+},
+{
+    text: "Qual è il vantaggio evolutivo della riproduzione sessuata?",
+    options: ["Il vantaggio evolutivo consiste nell’aumentare le cure parentali della prole dovuta alla presenza di due genitori; la prole ha così più probabilità di riprodursi e perpetuare la specie", "Nessuna delle risposte è corretta", "Il vantaggio evolutivo consiste nell’aumentare la variabilità genetica, dovuta al fatto che viene generata una discendenza con nuove combinazioni cromosomiche", "Tutte le risposte sono corrette"],
+    correct: 2
+},
+{
+    text: "Quale delle seguenti affermazioni è errata?",
+    options: ["L’uomo ha 46 coppie di cromosomi, 44 coppie di autosomi e 1 coppia di cromosomi sessuali", "L’uomo ha 23 coppie di cromosomi, 22 coppie di autosomi e 1 coppia di cromosomi sessuali", "L’ulivo ha 46 coppie di cromosomi, 23 coppie di cromosomi omologhi", "Il corredo cromosomico aploide dell’uomo è di 23 cromosomi"],
+    correct: 0
+},
+{
+    text: "Quale delle seguenti affermazioni è errata",
+    options: ["La mitosi genera cellule figlie con lo stesso numero di cromosomi", "La mitosi genere cellule figlie geneticamente identiche", "La meiosi genera cellule figlie geneticamente diverse", "La meiosi genera cellule figlie geneticamente identiche"],
+    correct: 3
+},
+{
+    text: "Quale delle seguenti affermazioni non è corretta?",
+    options: ["La meiosi è una divisione riduzionale e genera 4 cellule aploidi diverse tra loro", "La meiosi è una divisione riduzionale ed è tipica delle cellule della linea germinale", "La mitosi è una divisione equazionale ed è tipica delle cellule somatiche", "La mitosi è una divisione riduzionale ed è tipica delle cellule della linea germinale"],
+    correct: 3
+},
+{
+    text: "Grazie a quali processi la meiosi consente di ottenere una notevole variabilità del patrimonio genetico?",
+    options: ["La distribuzione casuale di ciascuno dei due cromosomi omologhi tra le due cellule figlie", "Per effetto del crossing over", "Per effetto della ricombinazione genica nella fase diplotene della profase della meiosi I", "Tutte le risposte sono corrette"],
+    correct: 3
+},
+{
+    text: "La profase della meiosi I è suddivisa in diversi stadi: Diacinesi: scomparsa del nucleolo e della membrana nucleare e formazione del fuso mitotico (A); Leptotene: comparsa dei cromosomi sotto forma di lunghi filamenti singoli sottili (lepto, infatti significa sottile) (B); Zigotene: (zygotos che significa unito assieme) quando avviene l’appaiamento dei cromosomi omologhi (sinapsi) (E); Pachitene: accorciamento e ispessimento dei cromosomi: le coppie di cromosomi sono dette bivalenti (D); Diplotene: sdoppiamento dei cromosomi in cromatidi, con formazione delle tetradi e crossing over (C); Qual è la loro corretta sequenza temporale?",
+    options: ["BDECA", "ABCDE", "BEDCA", "BDCEA"],
+    correct: 2
+},
+{
+    text: "Qual è il processo alla base della variabilità genetica in una specie che si riproduce con riproduzione sessuata?",
+    options: ["La mitosi e in casi particolari la meiosi", "Sia la meiosi che la mitosi, non c’è differenza", "La meiosi", "La mitosi"],
+    correct: 2
+},
+{
+    text: "Quali delle seguenti affermazioni è sbagliata?",
+    options: ["Nella meiosi avvengono due divisioni del nucleo", "Nella mitosi avviene solo una divisione del nucleo", "La meiosi ha due divisioni citoplasmatiche e porta alla formazione di quattro cellule aploidi identiche", "La mitosi produce due cellule figlie diploidi identiche alla cellula madre"],
+    correct: 2
+},
+{
+    text: "Qual è il processo alla base della crescita di un organismo e del ricambio delle cellule nei tessuti?",
+    options: ["La meiosi, processo alla base della riproduzione asessuata", "La meiosi, processo alla base della riproduzione sessuata", "La mitosi, processo alla base della riproduzione asessuata", "La mitosi, processo alla base della riproduzione sessuata"],
+    correct: 2
+},
+{
+    text: "Cosa è la sinapsi che si verifica durante la meiosi?",
+    options: ["La sintesi dei cromatidi fratelli in profase I", "Il tipo di giunzione specializzata che si verifica tra una cellula nervosa e una non nervosa", "L'appaiamento dei cromosomi omologhi in profase I", "Il tipo di giunzione specializzata che si verifica tra due cellule nervose"],
+    correct: 2
+},
+{
+    text: "è un tipo di riproduzione asessuata?",
+    options: ["tutte le risposte sono corrette", "anfigonia", "scissione binaria", "partenogenesi"],
+    correct: 2
+},
+{
+    text: "é un tipo di riproduzione sessuata?",
+    options: ["scissione binaria", "gemmazione", "tutte le risposte sono corrette", "partenogenesi"],
+    correct: 3
+},
+{
+    text: "Ilcrossing-over è un processo che?",
+    options: ["Dìà luogo alla formazione di cromosomi identici a quelli presenti prima del crossing over", "Caratterizza tanto la mitosi quanto la meiosi", "Porta ad un aumento della variabilità genetica", "Si realizza nel corso dell'anafase meiotica"],
+    correct: 2
+},
+{
+    text: "Se si incrociano le discendi dell’incrocio di due linee pure di pianta di Pisum sativum, per la lunghezza dello stelo definite generazione F1 ibride, che tipo di generazione F?2 si ottiene per il carattere dello stelo della pianta?",
+    options: ["La F2 è data da piante con stelo di lunghezza intermedia", "La F2 è data da 3:4 con stelo lungo e 1:4 con stelo corto", "La F2 è data da tutte piante con stelo corto", "La F2 è data da tutte piante con stelo lungo"],
+    correct: 1
+},
+{
+    text: "Che cosa è il genotipo?",
+    options: ["Il genotipo è il patrimonio genetico di un organismo o di una popolazione", "Il genotipo è l’insieme dei geni che compongono di un organismo o di una popolazione", "Tutte le risposte sono vere", "Il genotipo è l’assetto genetico di un organismo o di una popolazione"],
+    correct: 2
+},
+{
+    text: "Se si incrociano due linee pure di pianta di Pisum sativum, una dominante (stelo lungo) e una recessiva (stelo corto), che rappresentano la generazione parentale; che tipo di generazione F1 si ottiene per il carattere dello stelo della pianta?",
+    options: ["La FI è data da tutte piante con stelo corto, che sono dette ibride", "La FI è data da 3:4 con stelo lungo e 1:4 con stelo corto", "La FI è data da tutte piante con stelo lungo, che sono dette ibride", "La FI è data da piante con stelo di lunghezza intermedia, che sono dette ibride"],
+    correct: 2
+},
+{
+    text: "Sulla base della relazione tra frequenza di crossing-over e distanza tra due loci su un cromosoma è stato possibile?",
+    options: ["Sequenziare i geni sui cromosomi", "Costruire mappe per ogni cromosoma andando a posizionare gli alleli alle distanze corrispondenti alle loro frequenze di ricombinazione", "Stabilire che gli alleli di un dato gene si separano durante la formazione dei gameti, infatti, ciascun carattere è determinato da un fattore (gene) di cui esistono due forme alternative (allele)", "Stabilire che due fattori, responsabili di due caratteri diversi, assortiscono indipendentemente l’uno dall’altro"],
+    correct: 1
+},
+{
+    text: "Gregor Mendel scelse la pianta del Pisum sativum per i suoi studi di genetica; quali erano le sette caratteristiche fenotipiche di cui creò delle pure (generazione parentale) con caratteri fenotipici alternativi della pianta che lui scelse di studiare?",
+    options: ["Colore del fiore (bianco o viola), colore del seme (giallo o verde), forma del seme (liscio o rugoso), , forma del baccello (pieno o irregolare), forma delle radici (corte o", "nghe), lunghezza dello stelo (lungo o corto), posizione del fiore (assiale o terminale)", "Colore del fiore (bianco o viola), colore del seme (giallo o verde), forma del seme (liscio o rugoso), , forma del baccello (pieno o irregolare), colore del baccello (giallo o verde), lunghezza dello stelo (lungo o corto), posizione del fiore (assiale o terminale)", "Colore del fiore (bianco o viola), colore del seme (giallo o verde), forma del seme (liscio o rugoso), , forma del baccello (pieno o irregolare), numero dei fiori (cinque o dieci), lunghezza dello stelo (lungo o corto), posizione del fiore (assiale o terminale)", "Colore del fiore (bianco o viola), colore del seme (giallo o verde), forma del seme (liscio o rugoso), , forma del baccello (pieno o irregolare), numero dei baccelli (cinque o dieci), lunghezza dello stelo (lungo o corto), posizione del fiore (assiale o terminale)"],
+    correct: 1
+},
+{
+    text: "Oggi si sa che l’assortimento indipendente (seconda legge di Mendel) non avviene sempre; quale meccanismo spiega questa evidenza?",
+    options: ["I gameti ricombinanti si formano con frequenza inferiore rispetto alla previsione della seconda legge di Mendel (atteso rapporto 4:1 alla F2) perché il crossing over avviene più frequentemente tra loci vicini", "I gameti ricombinanti si formano con frequenza maggiore rispetto alla previsione della seconda legge di Mendel (atteso rapporto 4:1 alla F2) perché il crossing over avviene più frequentemente tra loci vicini", "I gameti ricombinanti si formano con frequenza inferiore rispetto alla previsione della seconda legge di Mendel (atteso rapporto 4:1 alla F2) perché il crossing over avviene più raramente tra loci vicini", "I gameti ricombinanti si formano con frequenza maggiore rispetto alla previsione della seconda legge di Mendel (atteso rapporto 4:1 alla F2) perché il crossing over avviene più raramente tra loci vicini"],
+    correct: 2
+},
+{
+    text: "La legge della dominanza (prima legge di Mendel) afferma che?",
+    options: ["Due fattori, responsabili di due caratteri diversi, assortiscono indipendentemente l’uno dall’altro", "Gli alleli di un dato gene si separano durante la formazione dei gameti, infatti, ciascun carattere è determinato da un fattore (gene) di cui esistono due forme alternative (allele)", "Nessuna delle risposte è corretta", "Dall’incrocio tra due linee pure che differiscono per un solo carattere, si ottiene una FI in cui gli individui manifestano uno solo dei due fenotipi, vale a dire quello dominante"],
+    correct: 3
+},
+{
+    text: "La legge della segregazione degli alleli (seconda legge di Mendel) afferma che?",
+    options: ["Due fattori, responsabili di due caratteri diversi, assortiscono indipendentemente l’uno dall’altro", "Gli alleli di un dato gene si separano durante la formazione dei gameti, infatti, ciascun carattere è determinato da un fattore (gene) di cui esistono due forme alternative (allele)", "Dall’incrocio tra due linee pure che differiscono per un solo carattere, si ottiene una FI in cui gli individui manifestano uno solo dei due fenotipi, vale a dire quello dominante", "Nessuna delle risposte è corretta"],
+    correct: 1
+},
+{
+    text: "Oggi si sa che l’assortimento indipendente (terza legge di Mendel) non avviene sempre; quando si verifica questa condizione?",
+    options: ["Tutte le risposte sono corrette", "Quando i geni che determinano due caratteri sono associati tra loro (sono, cioè, in linkage)", "Quando due geni si trovano vicini tra loro sullo stesso cromosoma", "Quando un gruppo di geni sullo stesso cromosoma è ereditato insieme"],
+    correct: 0
+},
+{
+    text: "La legge dell’assortimento indipendente (o terza legge di Mendel) afferma che?",
+    options: ["Dall’incrocio tra due linee pure che differiscono per un solo carattere, si ottiene una FI in cui gli individui manifestano uno solo dei due fenotipi, vale a dire quello dominante", "Due fattori, responsabili di due caratteri diversi, assortiscono indipendentemente l’uno dall’altro", "Gli alleli di un dato gene si separano durante la formazione dei gameti, infatti, ciascun carattere è determinato da un fattore (gene) di cui esistono due forme alternative (allele)", "Nessuna delle risposte è corretta"],
+    correct: 1
+},
+{
+    text: "Il sesso nell’uomo è determinato dai geni presenti sui cromosomi sessuali. Come sono dette le coppie dei cromosomi diverse da quelle sessuali? Quante sono nell’uomo? quali sono i cromosomi che determinano il sesso maschile e quali quello femminile?",
+    options: ["Autosomiche; 22 coppie; XY; XX", "Somatiche; 22 coppie; XY; XX.", "Recessive; 22 coppie; XY; XX", "Autosomiche; 46 coppie; XY; XX"],
+    correct: 0
+},
+{
+    text: "Che cosa sono i geni X-linked?",
+    options: ["I geni che hanno solo le femmine", "Le mutazioni ereditarie da parte della madre in epistasi che fanno ammalare i figli maschi", "I geni presenti sul cromosoma X, come il gene SRY che funziona da interruttore genetico per lo sviluppo dei testicoli nel feto, che producono gli ormoni sessuali", "I geni presenti sul cromosoma X, come i geni responsabili della percezione dei colori, della proteina muscolare distrofina e della coagulazione del sangue"],
+    correct: 3
+},
+{
+    text: "Qual è il gene biologicamente più importante presente nel cromosoma Y umano? Quali sono i suoi effetti?",
+    options: ["In realtà il cromosoma Y è piccolo ed eterocromatico e non contribuisce all'espressione genica: questa mancata espressione induce il sesso maschile", "Il gene SRX che funziona da interruttore genetico per lo sviluppo dei testicoli nel feto, che producono gli ormoni sessuali", "Il gene del daltonismo", "Il gene SRY che funziona da interruttore genetico per lo sviluppo dei testicoli nel feto, che producono gli ormoni sessuali"],
+    correct: 3
+},
+{
+    text: "Una malattia si definisce multifattoriale quando è causata?",
+    options: ["da un unico gene o da più fattori ambientali", "solo dall'interazione di diversi geni", "da molti fattori ambientali", "da più geni che interagiscono con l'ambiente"],
+    correct: 3
+},
+{
+    text: "Quando una sostituzione nucleotidica da luogo ad una sostituzione amminoacidica si parla di?",
+    options: ["mutazione silente", "mutazione frameshift", "mutazione di non senso", "mutazione di senso"],
+    correct: 3
+},
+{
+    text: "Quale tipo di mutazione può variare con la trasmissione alle generazioni successive?",
+    options: ["le mutazioni di senso", "nessuna di queste", "le mutazioni frameshift", "le mutazioni di non senso"],
+    correct: 2
+},
+{
+    text: "Qual è la frazione di geni che due fratelli hanno in comune tra loro?",
+    options: ["25%", "100%", "75%", "50%"],
+    correct: 3
+},
+{
+    text: "Quale di queste condizioni può verificarsi a seguito di una mutazione puntiforme?",
+    options: ["Conversione di una tripletta di senso in una di stop", "Tutte le risposte sono vere", "Conversione di una tripletta di stop in una di senso", "Conversione di una tripletta con una sinonima"],
+    correct: 1
+},
+{
+    text: "Quale dei seguenti tipi di mutazione non può avere luogo nella sequenza di un promotore",
+    options: ["non senso", "traslocazione", "delezione", "duplicazione"],
+    correct: 0
+},
+{
+    text: "La pleiotropia è?",
+    options: ["L'effetto fenotipico multiplo generato da un solo gene", "L'effetto fenotipico dei caratteri multifattoriali", "L'effetto fenotipico dell'interazione tra geni diversi", "L'effetto fenotipico di un gene modificato da altri geni"],
+    correct: 0
+},
+{
+    text: "La mutazione non senso consiste nella?",
+    options: ["perdita del codone di inizio", "sostituzione di un codone codificante con uno di stop", "perdita del codone di stop", "sostituzione di un codone che codifica per un amminoacido con un altro codone che codifica per un altro amminoacido"],
+    correct: 1
+},
+{
+    text: "Cosa sono gli istoni?",
+    options: ["Aminoacidi", "Proteine ricche di aminoacidi carichi positivamente", "Proteine ricche di aminoacidi carichi negativamente", "Lipidi"],
+    correct: 1
+},
+{
+    text: "Quale delle seguenti sostanze NON è prodotta con tecniche di DNA ricombinante a scopi terapeutici?",
+    options: ["Vaccino anti epatite B", "Ormone della crescita umano", "Insulina umana", "Insulina di maiale"],
+    correct: 0
+},
+{
+    text: "In quale caso piante o animali possono essere definiti transgenici?",
+    options: ["Quando un loro cromosoma è stato asportato", "Quando il DNA delle loro cellule è stato metilato", "Quando sono stati fatti accoppiare con individui di specie diverse e quindi il loro DNA risulta composto dal DNA di due specie diverse", "Quando il DNA delle loro cellule ha incorporato un gene estraneo"],
+    correct: 3
+},
+{
+    text: "Perchè nella PCR si usa la polimerasi Taq del batterio Thermus aquaticus?",
+    options: ["Perchè il batterio forma colonie molto numerose", "Perchè la polimerasi Taq è stabile al calore", "Perchè è facile da estrarre da quel batterio", "Perchè il batterio è di facile reperimento"],
+    correct: 1
+},
+{
+    text: "Il termine “junk DNA” si riferisce a?",
+    options: ["sequenze di DNA esoniche", "DNA che è andato incontro a degradazione", "sequenze di DNA che non contengono geni", "sequenze di DNA mitocondriale"],
+    correct: 2
+},
+{
+    text: "Qual è il processo biologico alla base della sindrome di Down?",
+    options: ["La non-disgiunzione dei cromosomi omologhi della coppia 21 nella meiosi durante la gametogenesi della linea germinale femminile", "La non-disgiunzione dei cromosomi omologhi della coppia 21 nella meiosi durante la gametogenesi della linea germinale maschile", "La traslocazione di un frammento del cromosoma 21 sul cromosoma 14", "Tutte le risposte sono corrette"],
+    correct: 0
+},
+{
+    text: "La sindrome di Turner è un esempio di che tipo di mutazione?",
+    options: ["Aneuploidia di un autosoma", "Poliploidia", "Aneuploidia di un cromosoma sessuale", "Eredità poligenica"],
+    correct: 2
+},
+{
+    text: "La sindrome di Klinefelter è un esempio di che tipo di mutazione?",
+    options: ["Aneuploidia di un autosoma", "Eredità poligenica", "Poliploidia", "Aneuploidia di un cromosoma sessuale", "Come è il cariotipo per i cromosomi sessuali nella sindrome di Turner? (3)", "47,x0", "47,xxY", "45,x0", "7,xvYY"],
+    correct: 3
+},
+{
+    text: "Come il cariotipo per i cromosomi sessuali nella sindrome di Klinefelter?",
+    options: ["47,xxY", "45,x0", "47,xvYY", "47,x0"],
+    correct: 0
+},
+{
+    text: "Una malattia causata da una delezione di una parte di cromosoma è la sindrome del «cri-du chat» (pianto del gatto); quale cromosoma subisce la delezione?",
+    options: ["Il cromosoma 5", "Il cromosoma 14", "Il cromosoma X", "Il cromosoma 21"],
+    correct: 0
+},
+{
+    text: "Quando un tratto legato all'X è recessivo, da chi hanno ereditato l'allele i maschi che esprimono il tratto?",
+    options: ["Hanno ricevuto l'allele recessivo dai padri", "Nessuna delle risposte è corretta, perchè lo possono ereditare solo le femmine", "Hanno ricevuto l'allele recessivo dalle madri", "Hanno ricevuto gli alleli recessivi da entrambi i genitori"],
+    correct: 2
+},
+{
+    text: "L'emofilia è un tratto umano recessivo legato all'X. Quali saranno le conseguenze se una portatrice femmina (eterozigote per il tratto) si accoppia con un maschio non affetto?",
+    options: ["Nessuno dei loro figli maschi avrà emofilia", "Metà dei loro figli maschi avrà emofilia", "Metà delle loro figlie femmine avrà emofilia", "Nessuna figlia femmina e nessun figlio maschio avranno emofilia"],
+    correct: 1
+},
+{
+    text: "L'anemia falciforme è un esempio di malattia ereditaria. Gli individui con questa malattia hanno globuli rossi di forma anomala (a falce) a causa di una mutazione del gene della beta-globina. Qual è la natura di questo cambiamento?",
+    options: ["La duplicazione genica", "L'inserzione di un nucleotide", "La perdita di cromosomi", "Il cambiamento in un nucleotide"],
+    correct: 3
+},
+{
+    text: "Quale terapia permette che individui affetti da fenilchetonuria non sviluppino ritardo mentale?",
+    options: ["La dieta appropriata da seguire in alcuni casi per tutta la vita", "La somministrazione di diuretici per eliminare i metaboliti tossici della fenilalanina", "La somministrazione di farmaci specifici per il metabolismo della fenilalanina", "La somministrazione di aspartame"],
+    correct: 0
+},
+{
+    text: "Quali caratteristiche sono usate per identificare i cromosomi nel cariotipo?",
+    options: ["Lunghezza, larghezza e peso", "Presenza/assenza del corpo di Barr, colore, lunghezza", "Posizione del centromero e peso", "Bandeggiatura, lunghezza, posizione del centromero"],
+    correct: 3
+},
+{
+    text: "Quali sono i fattori riconosciuti come associati ad un aumento di rischio per la sindrome di Down?",
+    options: ["L'assunzione di farmaci in gravidanza", "Il fumo", "L'età materna avanzata", "L'alcol"],
+    correct: 2
+},
+{
+    text: "La sindrome di Lesch-Nyhan è una rara malattia deteminata dall' allele recessivo di un gene sul cromosoma X. Una donna, che ha un fratello maschio affetto da sindrome di Lesch-Nyhan, che probabilità ha di essere portatrice?",
+    options: ["50%", "75%", "100%", "25%"],
+    correct: 0
+},
+{
+    text: "Quale affermazione sui cromosomi sessuali umani e sui geni che contengono è vera?",
+    options: ["Il contributo da parte materna determina il sesso dei figli", "Un bambino sano con due cromosomi sessuali dello stesso tipo può essere un maschio", "Ci sono geni che i maschi hanno ma che le femmine non hanno", "Lo sperma contiene solo il cromosoma Y, mentre tutte le cellule uovo contengono solo il cromosoma X"],
+    correct: 2
+},
+{
+    text: "Quale delle seguenti affermazioni è corretta?",
+    options: ["In alcune particolari condizioni ambientali alcuni virus temperati possono trasformarsi in virus virulenti", "Nel Ciclo lisogeno i virus, definiti temperati, non distruggono la cellula ospite ma si limitano a sfruttarla per replicarsi", "Il genoma dei virus temperati si integra in quello della cellula ospite e quando questa si replica, anche il DNA o PRNA del virus viene replicato", "Le risposte sono tutte corrette"],
+    correct: 3
+},
+{
+    text: "Cosa sono i prioni?",
+    options: ["Derivano da una proteina presente nel nostro organismo, la proteina prionica, abbreviata in PrPc, che si trasforma in PrPSc (proteina prionica dello scrapie) ed è in grado di riprodursi autonomamente, senza partire da uno stampo di DNA che viene trascritto in RNA e poi tradotto in proteina, trasmettendo la propria forma mal ripiegata", "Le risposte sono tutte vere", "Dall’inglese \"PRoteinaceous Infective ONly virus\" = particella infettiva solamente virale abbreviata in PrPv", "Una nuova tipologia di virus infettivi"],
+    correct: 1
+},
+{
+    text: "Che cosa è un virus?",
+    options: ["Un'entità biologica con caratteristiche di parassita obbligato", "Un organismo animale parassita", "Un organismo vegetale parassita", "Un virus è un minuscolo organismo vivente"],
+    correct: 0
+},
+{
+    text: "I prioni?",
+    options: ["causano malattie molto frequenti", "sono microRNA", "sono proteine mal ripiegate", "sono piccole molecole di DNA mal ripiegate"],
+    correct: 2
+},
+{
+    text: "Cosa sono i prioni?",
+    options: ["Derivano da una proteina presente nel nostro organismo, la proteina prionica, abbreviata in PrPc, che si trasforma in PrPSc (proteina prionica dello scrapie) e ed è in grado di riprodursi autonomamente, senza partire da uno stampo di DNA che viene trascritto in RNA e poi tradotto in proteina, trasmettendo la propria forma mal ripiegata", "Dall’inglese \"PRoteinaceous Infective ONly particle\" = particella infettiva solamente proteica e sono isoforme patologiche di una proteina presente nel nostro organismo la proteina prionica, abbreviata in PrPc", "Una tipologia del tutto nuova di agenti infettivi", "Le risposte sono tutte vere"],
+    correct: 3
+},
+{
+    text: "Che cosa è una specie?",
+    options: ["La specie è un gruppo di individui simili per struttura, funzioni e comportamento, che possono accoppiarsi tra loro e possono dare vita a prole fertile", "La specie è un gruppo di individui che occupa lo stesso territorio nello stesso tempo, condividendo le stesse risorse", "La specie è un gruppo di individui simili per struttura, funzioni e comportamento, che possono accoppiarsi tra loro", "Tutte le risposte sono vere"],
+    correct: 3
+},
+{
+    text: "Charles Darwin provò a spiegare il meccanismo con il quale le specie evolvono; quale teoria propose?",
+    options: ["Egli propose la teoria della fissità delle specie", "Egli propose la teoria dell’evoluzione delle specie mediante la selezione naturale", "Egli propose la teoria del catastrofismo", "Egli propose la teoria dell’ereditarietà dei caratteri acquisiti"],
+    correct: 1
+},
+{
+    text: "Da cosa si sono ricavate le evidenze a sostegno della teoria dell’evoluzione proposta da Charles Darwin?",
+    options: ["Tutte le risposte sono corrette", "Dallo studio dei fossili è stato possibile comprendere l'anatomia di organismi estinti", "Dallo studio della biogeografia, la scienza che studia la distribuzione presente e passata delle forme di vita sulla terra", "Dallo studio dell’anatomia comparata per verificare omologie strutturali e funzionali, fornendo evidenze a sostegno dell'ipotesi di un antenato comune"],
+    correct: 0
+},
+{
+    text: "Jean-Baptiste Lamarck provò a spiegare per la prima volta il meccanismo con il quale le specie evolvono; quale teoria propose?",
+    options: ["Egli propose la teoria del catastrofismo", "Egli propose la teoria della fissità delle specie", "Egli propose la teoria dell’evoluzione delle specie", "Egli propose la teoria dell’ereditarietà dei caratteri acquisiti"],
+    correct: 3
+},
+{
+    text: "Che cosa è la deriva genica?",
+    options: ["La deriva genica è un processo che si verifica quando si ha una perdita parziale della variabilità genetica in una popolazione che si è accresciuta a partire da un piccolo numero di individui", "La deriva genica è la diffusione dei geni fra popolazioni, per migrazioni di individui in età riproduttiva, e ha effetto sul variare le frequenze alleliche di una popolazione", "La deriva genetica è l'insieme dei cambiamenti casuali nelle frequenze alleliche da una generazione all’altra, in altre parole è la riduzione casuale della frequenza di un allele che causa alterazioni nelle frequenze alleliche delle generazioni successive", "La deriva genica è un’ingente perdita di variabilità genetica dovuta alla perdita di individui in una popolazione che ha effetto sulla frequenza allelica della popolazione"],
+    correct: 2
+},
+{
+    text: "Che cosa è l’effetto del fondatore?",
+    options: ["L’ effetto del fondatore è l'insieme dei cambiamenti casuali nelle frequenze alleliche da una generazione all’altra, in altre parole è la riduzione casuale della frequenza di un allele che causa alterazioni nelle frequenze alleliche delle generazioni successive", "L’ effetto del fondatore è la diffusione dei geni fra popolazioni, per migrazioni di individui in età riproduttiva, e ha effetto sul variare le frequenze alleliche di una popolazione", "L’ effetto del fondatore è un processo che si verifica quando si ha una perdita parziale della variabilità genetica in una popolazione che si è accresciuta a partire da un piccolo numero di individui", "L’ effetto del fondatore è un’ingente perdita di variabilità genetica dovuta alla perdita di individui in una popolazione che ha effetto sulla frequenza allelica della popolazione"],
+    correct: 2
+},
+{
+    text: "Che cosa è la selezione direzionale?",
+    options: ["Con il termine di selezione direzionale si intende la selezione naturale che favorisce i fenotipi estremi, rispetto ai fenotipi intermedi", "Con il termine di selezione direzionale si intende il contributo riproduttivo di un fenotipo alla generazione successiva, rapportato al contributo degli altri fenotipi, in altre parole il successo riproduttivo di un individuo", "Con il termine di selezione direzionale si intende la selezione che favorisce i caratteri intermedi rispetto a quelli estremi. In questo modo riduce la variabilità di un carattere nella popolazione, ma non ne cambia la media", "Con il termine di selezione direzionale si intende la selezione che ha l’effetto di promuovere un carattere estremo, aumentarne la frequenza nella popolazione, fino a rimpiazzare il precedente valore medio di quel carattere nella popolazione"],
+    correct: 3
+},
+{
+    text: "Che cosa è la selezione divergente?",
+    options: ["Con il termine di selezione divergente si intende il contributo riproduttivo di un fenotipo alla generazione successiva, rapportato al contributo degli altri fenotipi, in altre parole il successo riproduttivo di un individuo.", "Con il termine di selezione divergente si intende la selezione che ha l’effetto di promuovere un carattere estremo, aumentarne la frequenza nella popolazione, fino a rimpiazzare il precedente valore medio di quel carattere nella popolazione.", "Con il termine di selezione divergente si intende la selezione naturale che favorisce i fenotipi estremi, rispetto ai fenotipi intermedi.", "Con il termine di selezione divergente si intende la selezione che favorisce i caratteri intermedi rispetto a quelli estremi. In questo modo riduce la variabilità di un carattere nella popolazione, ma non ne cambia la media."],
+    correct: 2
+},
+{
+    text: "Qual è il fenomeno chiave che si può considerare alla base del processo di speciazione?",
+    options: ["L’isolamento riproduttivo, cioè la possibilità che due specie imparentate convivano senza che si verifichi rimescolamento genetico tra gli individui delle due popolazioni", "La selezione stabilizzante che favorisce i fenotipi estremi, rispetto ai fenotipi intermedi", "Il contributo riproduttivo di un fenotipo alla generazione successiva, rapportato al contributo degli altri fenotipi, in altre parole il successo riproduttivo di un individuo", "La selezione divergente che favorisce i caratteri intermedi rispetto a quelli estremi. In questo modo riduce la variabilità di un carattere nella popolazione, ma non ne cambia la media"],
+    correct: 0
+},
+{
+    text: "Quale delle seguenti non è una condizione che ci si attende possa favorire la speciazione allopatrica?",
+    options: ["i continenti si allontanano alla deriva e separano le popolazioni che in precedenza erano collegate tra loro", "una catena montuosa separa due popolazioni che in precedenza erano collegate tra loro", "in una parte dell'areale di una specie compaiono individui tetraploidi", "l'areale di una specie si frammenta per la perdita di un habitat intermedio"],
+    correct: 2
+},
+{
+    text: "Quale fra le seguenti affermazioni è falsa?",
+    options: ["Senza variabilità genetica non si può parlare di evoluzione", "l'evoluzione è il lento cambiamento del patrimonio genetico di una popolazione", "l'evoluzione si riferisce ai cambiamenti genetici dei singoli individui durante la loro vita", "l'evoluzione si riferisce ai cambiamenti genetici di una popolazione"],
+    correct: 2
+},
+{
+    text: "Quale delle seguenti affermazioni non compare fra le assunzioni dell'equilibrio di Hardy-Weinberg?",
+    options: ["La selezione naturale non agisce sugli alleli della popolazione", "Gli incroci avvengono a caso", "In ogni locus devono essere presenti due alleli", "Non vi sono migrazioni tra le popolazioni"],
+    correct: 2
+},
+{
+    text: "Quale fra le seguenti affermazioni è corretta?",
+    options: ["Per Charles Darwin l'evoluzione dipende dalla forza e dall'intelligenza di un organismo", "Per Charles Darwin l'evoluzione dipende da alterazioni epigenetiche", "Per Charles Darwin l'evoluzione dipende dalla sopravvivenza e riproduzione differenziata degli individui in dipendenza dalla variazione nei loro caratteri.", "Per Charles Darwin l'evoluzione porta a un graduale perfezionamento degli organismi generando forme via via più complesse"],
+    correct: 2
+}
+
+
+
+            // Puoi aggiungere qui tutte le altre domande dal set completo
+        ];
+
+
+        // Funzione per mescolare un array usando l'algoritmo di Fisher-Yates
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+
+            // Finché restano elementi da mescolare...
+            while (currentIndex != 0) {
+
+                // Seleziona un elemento rimanente...
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+
+                // E scambialo con l'elemento corrente.
+                [array[currentIndex], array[randomIndex]] = [
+                    array[randomIndex], array[currentIndex]];
+            }
+
+            return array;
+        }
+
+        // Funzione per ottenere un numero specifico di domande casuali
+        function getRandomQuestions(num) {
+            // Crea una copia dell'array delle domande per evitare di modificarlo direttamente
+            const shuffledQuestions = questions.slice();
+            // Mescola l'array delle domande
+            shuffle(shuffledQuestions);
+            // Restituisce le prime 'num' domande dall'array mescolato
+            return shuffledQuestions.slice(0, num);
+
+        }
+
+        // Funzione per salvare l'elenco delle domande visualizzate per riproporle se necessario
+        function saveSelectedQuestions(questions) {
+            localStorage.setItem('savedQuestions', JSON.stringify(questions));
+        }
+
+        // Funzione per caricare le domande salvate nel localStorage
+        function loadSavedQuestions() {
+            return JSON.parse(localStorage.getItem('savedQuestions'));
+        }
+
+        // Mostra il quiz con le domande salvate
+        function renderQuiz(savedQuestions = null) {
+            const quizForm = document.getElementById('quizForm');
+            quizForm.innerHTML = ''; // Pulisci il form per evitare duplicati
+
+            const questionsToRender = savedQuestions || getRandomQuestions(24);
+            if (!savedQuestions) {
+                saveSelectedQuestions(questionsToRender); // Salva solo se è un nuovo test
+            }
+
+            questionsToRender.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+                questionDiv.innerHTML = `<h3>${index + 1}. ${question.text}</h3>`;
+                question.options.forEach((option, i) => {
+                    const label = document.createElement('label');
+                    label.innerHTML = `<input type="radio" name="q${index}" value="${i}"> ${option}`;
+                    questionDiv.appendChild(label);
+                });
+                quizForm.appendChild(questionDiv);
+            });
+
+            const submitButton = document.createElement('button');
+            submitButton.textContent = "Invia Risposte";
+            submitButton.type = "button";
+            submitButton.onclick = () => calculateScore(questionsToRender);
+            quizForm.appendChild(submitButton);
+        }
+
+        // Ripropone lo stesso test con le domande salvate
+        function repeatSameTest() {
+            const savedQuestions = loadSavedQuestions();
+            if (savedQuestions) {
+                document.getElementById('startButton').style.display = 'none';
+                document.getElementById('timer').style.display = 'block';
+                renderQuiz(savedQuestions); // Mostra le domande salvate
+                startTimer(); // Avvia il timer
+            } else {
+                alert("Nessun test precedente trovato. Avvia un nuovo test prima di riproporlo.");
+            }
+        }
+
+        function calculateScore(questions) {
+            clearInterval(timer); // Ferma il timer
+            let score = 0;
+            let form = document.getElementById('quizForm');
+            let resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = ''; // Reset del risultato
+            let errors = 0;
+            let wrongAnswers = JSON.parse(localStorage.getItem('wrongAnswers')) || {};
+
+            // Calcola il punteggio e colora le risposte corrette
+            questions.forEach((question, index) => {
+                const radios = form[`q${index}`];
+                let userAnswer = null;
+
+                if (radios) {
+                    for (let i = 0; i < radios.length; i++) {
+                        if (radios[i].checked) {
+                            userAnswer = radios[i].value;
+                            break;
+                        }
+                    }
+                }
+
+                // Confronta la risposta e aggiorna il punteggio
+                if (userAnswer !== null && userAnswer == question.correct) {
+                    score++;
+                } else {
+                    errors++;
+                    wrongAnswers[`q${index}`] = (wrongAnswers[`q${index}`] || 0) + 1;
+                }
+
+                // Colora la risposta corretta in verde
+                for (let i = 0; i < radios.length; i++) {
+                    if (i == question.correct) {
+                        radios[i].parentElement.style.backgroundColor = 'lightgreen'; // Risposta corretta evidenziata
+                    }
+                }
+            });
+
+            // Mostra il risultato del test
+            if (score >= 18) {
+                resultDiv.innerHTML = `<p>TEST SUPERATO! Punteggio: ${score}/24</p>`;
+            } else {
+                resultDiv.innerHTML = `<p>TEST NON SUPERATO. Punteggio: ${score}/24</p>`;
+            }
+
+            // Calcola e salva il tempo totale impiegato
+            let totalTime = 40 * 60 - timeRemaining; // Tempo totale impiegato
+            saveResults(score, errors, wrongAnswers, totalTime); // Salva anche il tempo impiegato
+        }
+
+        // Confronta la risposta e aggiorna il punteggio
+        if (userAnswer !== null && userAnswer == question.correct) {
+            score++;
+        } else {
+            errors++;
+            wrongAnswers[`q${index}`] = (wrongAnswers[`q${index}`] || 0) + 1;
+        }
+
+        // Colora la risposta corretta in verde
+        for (let i = 0; i < radios.length; i++) {
+            if (i == question.correct) {
+                radios[i].parentElement.style.backgroundColor = 'lightgreen'; // Risposta corretta evidenziata
+            }
+        }
+            ;
+
+        // Mostra il risultato del test
+        if (score >= 18) {
+            resultDiv.innerHTML = `<p>TEST SUPERATO! Punteggio: ${score}/24</p>`;
+        } else {
+            resultDiv.innerHTML = `<p>TEST NON SUPERATO. Punteggio: ${score}/24</p>`;
+        }
+
+        // Calcola e salva il tempo totale impiegato
+        let totalTime = 40 * 60 - timeRemaining; // Tempo totale impiegato
+        saveResults(score, errors, wrongAnswers, totalTime); // Salva anche il tempo impiegato
+            
+
+        // Funzione per salvare i risultati nel local storage, inclusi il tempo e gli errori
+        function saveResults(score, errors, wrongAnswers, totalTime) {
+            let attempts = parseInt(localStorage.getItem('attempts')) || 0;
+            let totalErrors = parseInt(localStorage.getItem('totalErrors')) || 0;
+            let totalTimeSpent = parseInt(localStorage.getItem('totalTimeSpent')) || 0; // Tempo totale passato
+
+            attempts++;
+            totalErrors += errors;
+            totalTimeSpent += totalTime; // Aggiorna il tempo totale passato
+
+            // Salva i dati aggiornati nel localStorage
+            localStorage.setItem('attempts', attempts);
+            localStorage.setItem('totalErrors', totalErrors);
+            localStorage.setItem('wrongAnswers', JSON.stringify(wrongAnswers));
+            localStorage.setItem('totalTimeSpent', totalTimeSpent); // Salva il tempo totale impiegato
+        }
+
+
+        // Funzione per salvare i risultati nel local storage
+        function saveResults(score, errors, wrongAnswers) {
+            let attempts = parseInt(localStorage.getItem('attempts')) || 0;
+            let totalErrors = parseInt(localStorage.getItem('totalErrors')) || 0;
+
+            attempts++;
+            totalErrors += errors;
+
+            localStorage.setItem('attempts', attempts);
+            localStorage.setItem('totalErrors', totalErrors);
+            localStorage.setItem('wrongAnswers', JSON.stringify(wrongAnswers));
+        }
+
+
+        // Funzione per ricaricare la pagina e riavviare il test
+        function restartTest() {
+            if (confirm("Sei sicuro di voler riavviare il test? Perderai tutte le risposte inserite.")) {
+                window.location.reload(); // Ricarica la pagina
+            }
+        }
+
+        let timer; // Variabile per il timer
+        let timeRemaining = 40 * 60; // 40 minuti in secondi
+
+        // Funzione per avviare il test
+        function startTest() {
+            document.getElementById('startButton').style.display = 'none'; // Nasconde il pulsante
+            document.getElementById('timer').style.display = 'block'; // Mostra il timer
+            renderQuiz(); // Mostra il quiz
+            startTimer(); // Avvia il timer
+        }
+
+        // Funzione per avviare il timer
+        function startTimer() {
+            updateTimerDisplay(); // Aggiorna la visualizzazione del tempo immediatamente
+            timer = setInterval(function () {
+                timeRemaining--;
+                updateTimerDisplay();
+                if (timeRemaining <= 0) {
+                    clearInterval(timer);
+                    calculateScore(getRandomQuestions(24)); // Invia automaticamente il test
+                }
+            }, 1000); // Ogni secondo
+        }
+
+        // Aggiorna la visualizzazione del tempo
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            document.getElementById('time').textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+
+        // Aggiungi questa variabile per contare i clic sul timer
+        let timerClickCount = 0;
+
+        // Funzione per generare risposte casuali
+        function fillRandomAnswers() {
+            const quizForm = document.getElementById('quizForm');
+            const questions = document.querySelectorAll('.question');
+
+            // Cicla tutte le domande e seleziona una risposta casuale
+            questions.forEach((question, index) => {
+                const radios = quizForm[`q${index}`];
+                const randomIndex = Math.floor(Math.random() * radios.length); // Genera un indice casuale
+                radios[randomIndex].checked = true; // Seleziona una risposta casuale
+            });
+        }
+
+        // Funzione per selezionare tutte le risposte corrette basate sull'indice della domanda
+        function fillCorrectAnswers(questions) {
+            const quizForm = document.getElementById('quizForm');
+
+            // Per ogni domanda, seleziona la risposta corretta
+            questions.forEach((question, index) => {
+                const radios = quizForm[`q${index}`];
+
+                // Seleziona la risposta corretta
+                radios[question.correct].checked = true;
+            });
+        }
+        // Aggiungi l'evento click sul timer
+        document.getElementById('timer').addEventListener('click', () => {
+            timerClickCount++;
+
+            // Se cliccato 3 volte, compila automaticamente con risposte casuali
+            if (timerClickCount === 3) {
+                fillRandomAnswers();
+                timerClickCount = 0; // Resetta il contatore
+            }
+
+            // Se cliccato 6 volte, compila automaticamente con tutte le risposte corrette
+            if (timerClickCount === 6) {
+                const randomQuestions = getRandomQuestions(24); // Ottieni le domande visualizzate
+                fillCorrectAnswers(randomQuestions); // Compila le risposte corrette
+                timerClickCount = 0; // Resetta il contatore
+            }
+
+            // Resetta il contatore se non clicca entro 1.5 secondi
+            setTimeout(() => {
+                timerClickCount = 0;
+            }, 1500);
+        });
+
+    </script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then((registration) => {
+                        console.log('Service Worker registrato con successo:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('Service Worker registrazione fallita:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+
+</html>
